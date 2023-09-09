@@ -24,13 +24,29 @@ export const getNovelData = createAsyncThunk('novel/getNovelData', async (url: s
 });
 
 interface NovelState {
-  novelData: any;
+  novelData: {
+    serieName: string;
+    serieImageSrc: string;
+    authorName: string;
+    authorLink: string;
+    lastUpdate: string;
+    synopsis:string;
+    chapters:Array<{title:string; link:string;}>
+  };
   isLoading: boolean;
   hasError: boolean;
 }
 
 const initialState: NovelState = {
-  novelData: {},
+  novelData: {
+    serieName: '',
+    serieImageSrc: '',
+    authorName: '',
+    authorLink: '',
+    lastUpdate: '',
+    synopsis: '',
+    chapters: [],
+  },
   isLoading: false,
   hasError: false,
 }
