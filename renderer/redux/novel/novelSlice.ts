@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-export const getNovelData = createAsyncThunk('novel/getNovelData', async (url) => {
+export const getNovelData = createAsyncThunk('novel/getNovelData', async (url: string,thunkAPI) => {
   const options = {
     method: 'POST',
     headers: {
@@ -23,11 +23,17 @@ export const getNovelData = createAsyncThunk('novel/getNovelData', async (url) =
   }
 });
 
-const initialState = {
+interface NovelState {
+  novelData: any;
+  isLoading: boolean;
+  hasError: boolean;
+}
+
+const initialState: NovelState = {
   novelData: {},
   isLoading: false,
   hasError: false,
-};
+}
 
 const novelSlice = createSlice({
   name: 'novel',
