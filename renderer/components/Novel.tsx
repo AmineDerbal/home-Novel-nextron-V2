@@ -10,13 +10,14 @@ const Novel = () => {
   if (isLoading) {
     return <div className="text-red-100">Loading...</div>;
   }
-  if (hasError || (novelData.status && novelData.status === 'Error')) {
+  if (hasError ) {
     return <div>Error...</div>;
   }
   if (!novelData || Object.keys(novelData).length === 0) {
     return <div>Waiting for url...</div>;
   }
-  return <div className="mt-5 text-red-100">{novelData.chapterData.serieName}</div>;
+  
+  return <div className="mt-5 text-red-100">{novelData.serieName}</div>;
 };
 
 export default Novel;
