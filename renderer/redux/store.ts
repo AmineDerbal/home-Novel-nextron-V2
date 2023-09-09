@@ -6,5 +6,5 @@ const store = configureStore({
     novel: novelReducer,
   },
 });
-
+export type RootState = ReturnType<typeof store.getState>; // Define and export RootState type
 export default store;
