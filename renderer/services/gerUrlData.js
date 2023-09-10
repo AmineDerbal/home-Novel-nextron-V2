@@ -73,10 +73,7 @@ const getData = async (url) => {
       timeout: 0,
     });
     if (response.status() !== 200) {
-      return {
-        status: 'Error',
-        message: 'an error has occured',
-      };
+      throw new Error('an error has occured');
     }
     let newUrl = url;
     const urlRead = /\/read\//;
@@ -106,23 +103,17 @@ const getData = async (url) => {
     const chapters = await generateChaptersList(page);
     browser.close();
     if (chapters.status || chapters.status === 'Error') {
-      return {
-        status: 'Error',
-        message: 'an error has occured',
-      };
+      throw new Error('an error has occured');
     }
 
     return {
-      status: 'Success',
-      chapterData: {
-        serieName,
-        serieImageSrc,
-        authorName,
-        authorLink,
-        lastUpdate,
-        synopsis,
-        chapters,
-      },
+      serieName,
+      serieImageSrc,
+      authorName,
+      authorLink,
+      lastUpdate,
+      synopsis,
+      chapters,
     };
   } catch (error) {
     return {
