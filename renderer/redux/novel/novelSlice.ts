@@ -13,6 +13,12 @@ export const getNovelData = createAsyncThunk('novel/getNovelData', async (url: s
 
   try {
     const novelStream = await fetch('/api/novel', options);
+    if(!novelStream.ok) {
+      return {
+        status: 'Error',
+        message: 'an error has occured',
+      };
+    }
     const novelData = await novelStream.json();
     return await novelData;
   } catch (error) {
@@ -35,6 +41,7 @@ interface NovelState {
   };
   isLoading: boolean;
   hasError: boolean;
+  error: string | null;
 }
 
 const initialState: NovelState = {
@@ -49,6 +56,7 @@ const initialState: NovelState = {
   },
   isLoading: false,
   hasError: false,
+  error: null,
 }
 
 const novelSlice = createSlice({
@@ -66,17 +74,21 @@ const novelSlice = createSlice({
     builder.addCase(getNovelData.fulfilled, (state, action) => {
       const novelData = action.payload;
       const isLoading = false;
+      const error = null;
       return {
         ...state,
         novelData,
+        error,
         isLoading,
       };
     });
-    builder.addCase(getNovelData.rejected, (state) => {
+    builder.addCase(getNovelData.rejected, (state,action) => {
       const hasError = true;
       const isLoading = false;
+      const error = action.error.message;
       return {
         ...state,
+        error,
         hasError,
         isLoading,
       };
