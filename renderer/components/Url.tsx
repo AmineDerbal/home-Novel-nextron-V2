@@ -15,11 +15,12 @@ const Url = () => {
     }
     console.log('url of url page', url);
     await dispatch(getNovelData(url));
+    
   };
   return (
-    <div className='input-url '>
+    <div>
       <input
-        className='width-100'
+        className='width-100 text-black'
         type='text'
         value={url}
         id='url'
