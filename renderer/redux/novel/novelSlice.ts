@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-export const getNovelData = createAsyncThunk('novel/getNovelData', async (url: string,thunkAPI) => {
+export const getNovelData = createAsyncThunk('novel/getNovelData', async (url: string,{rejectWithValue}) => {
   const options = {
     method: 'POST',
     headers: {
@@ -13,19 +13,16 @@ export const getNovelData = createAsyncThunk('novel/getNovelData', async (url: s
 
   try {
     const novelStream = await fetch('/api/novel', options);
-    if(!novelStream.ok) {
-      return {
-        status: 'Error',
-        message: 'an error has occured',
-      };
-    }
+    
     const novelData = await novelStream.json();
+   if(novelStream.status !== 200 ) {
+     throw new Error(novelData.error)
+     }
     return await novelData;
   } catch (error) {
-    return {
-      status: 'Error',
-      message: error,
-    };
+  
+   
+    return rejectWithValue(error)
   }
 });
 
@@ -41,7 +38,7 @@ interface NovelState {
   };
   isLoading: boolean;
   hasError: boolean;
-  error: string | null;
+  error: string;
 }
 
 const initialState: NovelState = {
@@ -56,7 +53,7 @@ const initialState: NovelState = {
   },
   isLoading: false,
   hasError: false,
-  error: null,
+  error: '',
 }
 
 const novelSlice = createSlice({
@@ -76,16 +73,17 @@ const novelSlice = createSlice({
       const isLoading = false;
       const error = null;
       return {
-        ...state,
         novelData,
+        ...state,
         error,
         isLoading,
       };
     });
-    builder.addCase(getNovelData.rejected, (state,action) => {
+    builder.addCase(getNovelData.rejected, (state,{payload}) => {
       const hasError = true;
       const isLoading = false;
-      const error = action.error.message;
+      const error = payload.toString();
+      console.log('error',error)
       return {
         ...state,
         error,
