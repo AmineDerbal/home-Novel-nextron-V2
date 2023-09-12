@@ -49,7 +49,7 @@ const generateChaptersList = async (page, chaptersList = []) => {
   } catch (error) {
     return {
       status: 'Error',
-      message: 'an error has occured',
+      message: error.message,
     };
   }
 };
@@ -58,6 +58,7 @@ const getData = async (url) => {
   try {
     const browser = await puppeteer.launch({ executablePath: executablePath(), headless: false });
     const page = await browser.newPage();
+
     await page.setExtraHTTPHeaders({
       'user-agent':
         'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
@@ -73,7 +74,8 @@ const getData = async (url) => {
       timeout: 0,
     });
     if (response.status() !== 200) {
-      throw new Error('an error has occured');
+      browser.close();
+      throw new Error('an error 3 has occured');
     }
     let newUrl = url;
     const urlRead = /\/read\//;
@@ -103,6 +105,7 @@ const getData = async (url) => {
     const chapters = await generateChaptersList(page);
     browser.close();
     if (chapters.status || chapters.status === 'Error') {
+      browser.close();
       throw new Error('an error has occured');
     }
 
@@ -116,10 +119,8 @@ const getData = async (url) => {
       chapters,
     };
   } catch (error) {
-    return {
-      status: 'Error',
-      message: 'an error has occured',
-    };
+    browser.close();
+    throw new Error(error);
   }
 };
 
