@@ -55,8 +55,8 @@ const generateChaptersList = async (page, chaptersList = []) => {
 };
 
 const getData = async (url) => {
+  const browser = await puppeteer.launch({ executablePath: executablePath(), headless: false });
   try {
-    const browser = await puppeteer.launch({ executablePath: executablePath(), headless: false });
     const page = await browser.newPage();
 
     await page.setExtraHTTPHeaders({
