@@ -8,8 +8,7 @@ const handler = async (req, res) => {
       console.log('response',response)
       res.json(response);
     } catch (error) {
-      //console.error('An error occurred:', error.message);
-
+  
       // You can send a meaningful error response to the client
       res.status(500).json({ error: 'An error occurred while fetching the data' });
     }
