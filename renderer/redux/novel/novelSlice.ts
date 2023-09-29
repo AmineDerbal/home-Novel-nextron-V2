@@ -1,30 +1,32 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-export const getNovelData = createAsyncThunk('novel/getNovelData', async (url: string,{rejectWithValue}) => {
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      url,
-    }),
-  };
+export const getNovelData = createAsyncThunk(
+  'novel/getNovelData',
+  async (url: string, { rejectWithValue }) => {
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        url,
+      }),
+    };
 
-  try {
-    const novelStream = await fetch('/api/novel', options);
-    
-    const novelData = await novelStream.json();
-   if(novelStream.status !== 200 ) {
-     throw new Error(novelData.error)
-     }
-    return await novelData;
-  } catch (error) {
-  
-   
-    return rejectWithValue(error)
-  }
-});
+    try {
+      const novelStream = await fetch('/api/novel', options);
+
+      const novelData = await novelStream.json();
+      if (novelStream.status !== 200) {
+        throw new Error(novelData.error);
+      }
+      console.log(novelData);
+      return await novelData;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
 
 interface NovelState {
   novelData: {
@@ -33,8 +35,8 @@ interface NovelState {
     authorName: string;
     authorLink: string;
     lastUpdate: string;
-    synopsis:string;
-    chapters:Array<{title:string; link:string;}>
+    synopsis: string;
+    chapters: Array<{ title: string; link: string }>;
   };
   isLoading: boolean;
   hasError: boolean;
@@ -54,7 +56,7 @@ const initialState: NovelState = {
   isLoading: false,
   hasError: false,
   error: '',
-}
+};
 
 const novelSlice = createSlice({
   name: 'novel',
@@ -70,20 +72,21 @@ const novelSlice = createSlice({
     });
     builder.addCase(getNovelData.fulfilled, (state, action) => {
       const novelData = action.payload;
+      console.log('payLoad', novelData);
       const isLoading = false;
       const error = null;
       return {
-        novelData,
         ...state,
+        novelData,
         error,
         isLoading,
       };
     });
-    builder.addCase(getNovelData.rejected, (state,{payload}) => {
+    builder.addCase(getNovelData.rejected, (state, { payload }) => {
       const hasError = true;
       const isLoading = false;
       const error = payload.toString();
-      console.log('error',error)
+      console.log('error', error);
       return {
         ...state,
         error,
