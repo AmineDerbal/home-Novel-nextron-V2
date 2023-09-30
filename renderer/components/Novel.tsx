@@ -36,9 +36,21 @@ const Novel = () => {
   }
 
   return (
-    <div className="mt-5 text-center text-white">
-      {' '}
-      Hello {novelData.authorName}
+    <div className="mt-5 text-white">
+      <div className="mt-2 flex ">
+        <img
+          src={novelData.serieImageSrc}
+          alt="cover"
+          className="w-1/4 object-contain"
+        />
+        <div>
+          <p>Name: {novelData.serieName}</p>
+          <p>Author: {novelData.authorName}</p>
+          <p>Link: {novelData.authorLink}</p>
+          <p>Last Update: {novelData.lastUpdate}</p>
+          <p>Synopsis: {novelData.synopsis}</p>
+        </div>
+      </div>
     </div>
   );
 };
