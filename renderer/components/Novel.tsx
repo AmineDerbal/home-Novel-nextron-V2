@@ -51,6 +51,19 @@ const Novel = () => {
           <p>Synopsis: {novelData.synopsis}</p>
         </div>
       </div>
+      <div>
+        {novelData.chapters.map((chapter: { title: string; link: string }) => (
+          <div>
+            {' '}
+            <a
+              key={chapter.title}
+              href={chapter.link}
+            >
+              {chapter.title}
+            </a>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
