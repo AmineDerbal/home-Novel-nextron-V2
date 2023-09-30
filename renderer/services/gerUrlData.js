@@ -13,7 +13,10 @@ const isNextPageLink = async (page) => {
 };
 const isNextPageHref = async (page) => {
   try {
-    const nextPageHref = await page.$eval("a[class='page-link next']", (el) => el.href);
+    const nextPageHref = await page.$eval(
+      "a[class='page-link next']",
+      (el) => el.href,
+    );
     return /\?toc/.test(nextPageHref);
   } catch (error) {
     return false;
@@ -39,10 +42,12 @@ const generateChaptersList = async (page, chaptersList = []) => {
     const chapters = await getChapterList(page);
     for (let i = 0; i < chapters.length; i += 1) {
       const chapter = chapters[i];
-      chaptersList.push(getChapterData(page, chapter));
+      chaptersList.push(await getChapterData(page, chapter));
     }
     if ((await isNextPageHref(page)) && (await isNextPageLink(page))) {
-      await page.goto(await page.$eval("a[class='page-link next']", (el) => el.href));
+      await page.goto(
+        await page.$eval("a[class='page-link next']", (el) => el.href),
+      );
       return generateChaptersList(page, chaptersList);
     }
     return chaptersList;
@@ -55,7 +60,10 @@ const generateChaptersList = async (page, chaptersList = []) => {
 };
 
 const getData = async (url) => {
-  const browser = await puppeteer.launch({ executablePath: executablePath(), headless: false });
+  const browser = await puppeteer.launch({
+    executablePath: executablePath(),
+    headless: false,
+  });
   try {
     const page = await browser.newPage();
 
@@ -86,7 +94,8 @@ const getData = async (url) => {
       newUrl = serieUrl;
     }
     // if url has toc path in the end eg : ?toc=11#content1
-    const serieMatch = /(https?:\/\/www.scribblehub.com\/series\/\d+\/(\w|\W)*\/)\?toc=\d/;
+    const serieMatch =
+      /(https?:\/\/www.scribblehub.com\/series\/\d+\/(\w|\W)*\/)\?toc=\d/;
     if (serieMatch.test(newUrl)) {
       [, newUrl] = newUrl.match(serieMatch);
     }
@@ -94,8 +103,14 @@ const getData = async (url) => {
     const serieName = await page.$eval('.fic_title', (el) => el.innerHTML);
     console.log('serie name', serieName);
     const serieImageSrc = await page.$eval('.fic_image img', (el) => el.src);
-    const authorName = await page.$eval('.auth_name_fic', (el) => el.textContent);
-    const authorLink = await page.$eval("span[property='name'] a", (el) => el.href);
+    const authorName = await page.$eval(
+      '.auth_name_fic',
+      (el) => el.textContent,
+    );
+    const authorLink = await page.$eval(
+      "span[property='name'] a",
+      (el) => el.href,
+    );
     const lastUpdate = await page.$eval(
       '.toc_ol:first-child .fic_date_pub',
       (el) => el.textContent,
@@ -103,12 +118,12 @@ const getData = async (url) => {
     const synopsis = await page.$eval('.wi_fic_desc', (el) => el.innerText);
 
     const chapters = await generateChaptersList(page);
-    browser.close();
     if (chapters.status || chapters.status === 'Error') {
       browser.close();
       throw new Error('an error has occured');
     }
 
+    browser.close();
     return {
       serieName,
       serieImageSrc,
