@@ -15,7 +15,6 @@
     "electron-store": "^8.1.0"
   },
   "devDependencies": {
-    "@prisma/client": "^5.3.1",
     "@reduxjs/toolkit": "^1.9.5",
     "@types/node": "^18.11.18",
     "@types/react": "^18.0.26",
@@ -25,7 +24,6 @@
     "next": "^12.3.4",
     "nextron": "^8.6.0",
     "postcss": "^8.4.13",
-    "prisma": "^5.3.1",
     "puppeteer": "^19.11.1",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
