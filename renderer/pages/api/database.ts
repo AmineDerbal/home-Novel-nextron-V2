@@ -1,9 +1,9 @@
-import db from '../../utils/db';
+import { serializeDb } from '../../utils/db';
 
 const handler = async (req, res) => {
   if (req.method === 'GET') {
     try {
-      await db();
+      await serializeDb();
       res.json({ message: 'connected' });
     } catch (error) {
       res
