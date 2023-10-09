@@ -16,6 +16,7 @@ const Novel = () => {
       obj['lastUpdate'] !== '' ||
       obj['serieImageSrc'] !== '' ||
       obj['serieName'] !== '' ||
+      obj['serieLink'] !== '' ||
       obj['synopsis'] !== ''
     ) {
       return false;
@@ -45,24 +46,27 @@ const Novel = () => {
         />
         <div>
           <p>Name: {novelData.serieName}</p>
+          <p>Link: {novelData.serieLink}</p>
           <p>Author: {novelData.authorName}</p>
-          <p>Link: {novelData.authorLink}</p>
+          <p>Author Link: {novelData.authorLink}</p>
           <p>Last Update: {novelData.lastUpdate}</p>
           <p>Synopsis: {novelData.synopsis}</p>
         </div>
       </div>
       <div>
-        {novelData.chapters.map((chapter: { title: string; link: string }) => (
-          <div>
-            {' '}
-            <a
-              key={chapter.title}
-              href={chapter.link}
-            >
-              {chapter.title}
-            </a>
-          </div>
-        ))}
+        {novelData.chapters.map(
+          (chapter: { title: string; link: string }, index: number) => (
+            <div>
+              {' '}
+              <a
+                key={`chapter-${index}`}
+                href={chapter.link}
+              >
+                {chapter.title}
+              </a>
+            </div>
+          ),
+        )}
       </div>
     </div>
   );
