@@ -85,19 +85,19 @@ const getData = async (url) => {
       browser.close();
       throw new Error('an error 3 has occured');
     }
-    let newUrl = url;
+    let serieLink = url;
     const urlRead = /\/read\//;
-    if (urlRead.test(newUrl)) {
+    if (urlRead.test(serieLink)) {
       const indexSerie = await page.$('.c_index a');
-      const serieUrl = await page.evaluate((el) => el.href, indexSerie);
-      await page.goto(serieUrl);
-      newUrl = serieUrl;
+      const newSerieUrl = await page.evaluate((el) => el.href, indexSerie);
+      await page.goto(newSerieUrl);
+      serieLink = newSerieUrl;
     }
     // if url has toc path in the end eg : ?toc=11#content1
     const serieMatch =
       /(https?:\/\/www.scribblehub.com\/series\/\d+\/(\w|\W)*\/)\?toc=\d/;
-    if (serieMatch.test(newUrl)) {
-      [, newUrl] = newUrl.match(serieMatch);
+    if (serieMatch.test(serieLink)) {
+      [, serieLink] = serieLink.match(serieMatch);
     }
 
     const serieName = await page.$eval('.fic_title', (el) => el.innerHTML);
@@ -126,6 +126,7 @@ const getData = async (url) => {
     browser.close();
     return {
       serieName,
+      serieLink,
       serieImageSrc,
       authorName,
       authorLink,

@@ -31,6 +31,7 @@ export const getNovelData = createAsyncThunk(
 interface NovelState {
   novelData: {
     serieName: string;
+    serieLink: string;
     serieImageSrc: string;
     authorName: string;
     authorLink: string;
@@ -46,6 +47,7 @@ interface NovelState {
 const initialState: NovelState = {
   novelData: {
     serieName: '',
+    serieLink: '',
     serieImageSrc: '',
     authorName: '',
     authorLink: '',
