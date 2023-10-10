@@ -15,6 +15,7 @@ export const serializeDb = () => {
     db.run(`CREATE TABLE IF NOT EXISTS novels (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       serieName TEXT NOT NULL,
+      serieLink TEXT NOT NULL,
       serieImageSrc TEXT NOT NULL,
       authorName TEXT NOT NULL,
       authorLink TEXT NOT NULL,
