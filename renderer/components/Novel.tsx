@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store'; // Make sure to import the correct RootState type
 import Loader from './Loader';
+import saveNovel from '../services/saveNovel';
 
 const Novel = () => {
   const { novelData, isLoading, hasError, error } = useSelector(
@@ -44,6 +45,12 @@ const Novel = () => {
           alt="cover"
           className="w-1/4 object-contain"
         />
+        <button
+          type="button"
+          onClick={() => saveNovel(novelData)}
+        >
+          Add to Library
+        </button>
         <div>
           <p>Name: {novelData.serieName}</p>
           <p>Link: {novelData.serieLink}</p>
