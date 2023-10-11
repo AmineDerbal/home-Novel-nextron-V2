@@ -15,21 +15,24 @@ const Url = () => {
     }
     console.log('url of url page', url);
     await dispatch(getNovelData(url));
-    
   };
   return (
-    <div>
+    <div className="flex gap-3 justify-center mx-10">
       <input
-        className='width-100 text-black'
-        type='text'
+        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        type="text"
         value={url}
-        id='url'
+        id="url"
         onChange={(e) => {
           setUrl(e.target.value);
         }}
-        placeholder='type a ScribbleHub url'
+        placeholder="type a ScribbleHub url"
       />
-      <button type='button' className='submit' onClick={handleClick}>
+      <button
+        type="button"
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        onClick={handleClick}
+      >
         Download
       </button>
     </div>
