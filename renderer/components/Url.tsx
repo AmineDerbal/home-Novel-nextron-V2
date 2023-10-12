@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import testUrl from '../utils/utils';
 import { getNovelData } from '../redux/novel/novelSlice';
@@ -6,6 +6,8 @@ import { getNovelData } from '../redux/novel/novelSlice';
 const Url = () => {
   const [url, setUrl] = useState('');
   const dispatch = useDispatch<any>();
+
+  useEffect(() => {}, [url]);
 
   const handleClick = async () => {
     if (url === '') return;
