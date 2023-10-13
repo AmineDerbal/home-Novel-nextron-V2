@@ -39,41 +39,47 @@ const Novel = () => {
 
   return (
     <div className="mt-5 text-white">
-      <div className="mt-2 flex ">
+      <div className="mt-2 flex wrap gap-5">
         <img
           src={novelData.serieImageSrc}
           alt="cover"
-          className="w-1/4 object-contain"
+          className="w-[300px] h-[300px] object-contain"
         />
-        <button
-          type="button"
-          onClick={() => saveNovel(novelData)}
-        >
-          Add to Library
-        </button>
         <div>
-          <p>Name: {novelData.serieName}</p>
-          <p>Link: {novelData.serieLink}</p>
-          <p>Author: {novelData.authorName}</p>
-          <p>Author Link: {novelData.authorLink}</p>
+          <h2>
+            Title:{' '}
+            <a
+              onClick={(event) => {
+                event.preventDefault();
+                window.location.href = 'chrome://newtab';
+                window.open(novelData.serieLink, '_blank');
+              }}
+              href={novelData.serieLink}
+            >
+              {novelData.serieName}
+            </a>
+          </h2>
+          <p>
+            Author: <a href={novelData.authorLink}>{novelData.authorName}</a>
+          </p>
           <p>Last Update: {novelData.lastUpdate}</p>
+          <p>Chapter(s): {novelData.chapters.length}</p>
           <p>Synopsis: {novelData.synopsis}</p>
         </div>
       </div>
+      <button
+        type="button"
+        onClick={() => saveNovel(novelData)}
+      >
+        Add to Library
+      </button>
       <div>
-        {novelData.chapters.map(
-          (chapter: { title: string; link: string }, index: number) => (
-            <div>
-              {' '}
-              <a
-                key={`chapter-${index}`}
-                href={chapter.link}
-              >
-                {chapter.title}
-              </a>
-            </div>
-          ),
-        )}
+        {novelData.chapters.map((chapter: { title: string; link: string }) => (
+          <div key={`chapter-${chapter.link}`}>
+            {' '}
+            <a href={chapter.link}>{chapter.title}</a>
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -25,9 +25,11 @@ const Home = () => {
 
   return (
     <Provider store={store}>
-      <h1 className="text-center mt-5">Welcome</h1>
-      <Url />
-      <Novel />
+      <div className="mx-10">
+        <h1 className="text-center mt-5">Welcome</h1>
+        <Url />
+        <Novel />
+      </div>
     </Provider>
   );
 };
