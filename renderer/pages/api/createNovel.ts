@@ -14,7 +14,8 @@ const handler = async (req: any, res: any) => {
       synopsis,
     } = novel;
 
-    const insertQuery = `INSERT INTO novels (serieName, serieLink, serieImageSrc, authorName, authorLink, lastUpdate, synopsis) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    const insertQuery = `INSERT INTO novels (serieName, serieLink, serieImageSrc, authorName, authorLink, lastUpdate, synopsis) 
+    VALUES (?, ?, ?, ?, ?, ?, ?)`;
     const values = [
       serieName,
       serieLink,
@@ -32,6 +33,8 @@ const handler = async (req: any, res: any) => {
       res
         .status(500)
         .json({ error: 'An error occurred while creating the novel' });
+    } finally {
+      db.close();
     }
   }
 };
