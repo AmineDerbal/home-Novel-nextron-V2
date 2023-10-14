@@ -1,19 +1,36 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store'; // Make sure to import the correct RootState type
 import Loader from './Loader';
 import saveNovel from '../services/saveNovel';
+import checkNovel from '../services/checkNovel';
+import deleteNovel from '../services/deleteNovel';
 
 const Novel = () => {
   const { novelData, isLoading, hasError, error } = useSelector(
     (state: RootState) => state.novel,
   );
 
-  const [filled, setFilled] = useState(true);
+  const [isNovelInLibrary, setIsNovelInLibrary] = useState(false);
+  const [saveNovelTrigger, setSaveNovelTrigger] = useState(false);
+  const [novelId, setNovelId] = useState('');
 
-  const toggleFill = () => {
-    setFilled(!filled);
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!isNovelEmpty(novelData)) {
+        const novel = {
+          serieName: novelData.serieName,
+          serieLink: novelData.serieLink,
+          authorName: novelData.authorName,
+        };
+        const checkIsNovelInLibrary = await checkNovel(novel);
+        const { success, id } = checkIsNovelInLibrary;
+        success ? setNovelId(id) : setNovelId('');
+        setIsNovelInLibrary(success);
+      }
+    };
+    fetchData();
+  }, [novelData, saveNovelTrigger]);
 
   const isNovelEmpty = (obj: any) => {
     if (
@@ -30,8 +47,6 @@ const Novel = () => {
     }
     return true;
   };
-
-  console.log('novelData', isNovelEmpty(novelData));
 
   if (isLoading) {
     return <Loader />;
@@ -52,15 +67,12 @@ const Novel = () => {
           className="w-[300px] h-[300px] object-contain"
         />
         <div>
-          <div
-            className="cursor-pointer"
-            onClick={toggleFill}
-          >
+          <div className="cursor-pointer">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               className={`w-16 h-16  ${
-                filled
+                isNovelInLibrary
                   ? 'fill-blue-500 stroke-blue-500'
                   : 'fill-gray-900 stroke-gray-400'
               }`}
@@ -90,9 +102,19 @@ const Novel = () => {
       </div>
       <button
         type="button"
-        onClick={() => saveNovel(novelData)}
+        onClick={async () => {
+          if (isNovelInLibrary) {
+            const isNovelDeleted = await deleteNovel(novelId);
+            if (isNovelDeleted) {
+              setSaveNovelTrigger(false);
+            }
+            return;
+          }
+          await saveNovel(novelData);
+          setSaveNovelTrigger(true);
+        }}
       >
-        Add to Library
+        {isNovelInLibrary ? 'Remove from library' : 'Add to library'}
       </button>
       <div>
         {novelData.chapters.map((chapter: { title: string; link: string }) => (
