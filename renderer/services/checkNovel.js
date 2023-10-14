@@ -10,12 +10,17 @@ const checkNovel = async (novel) => {
       }),
     };
     const response = await fetch('api/checkNovel', options);
-    const { message } = await response.json();
-    if (message === 'Novel already exists') {
-      return true;
+    const data = await response.json();
+    if (data.message === 'Novel already exists') {
+      return {
+        success: true,
+        id: data.id,
+      };
     }
-    return false;
+    return { success: false };
   } catch (error) {
-    return false;
+    return { success: false };
   }
 };
+
+export default checkNovel;

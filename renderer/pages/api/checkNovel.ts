@@ -13,7 +13,7 @@ const handler = async (req: any, res: any) => {
       const values = [serieName, serieLink, authorName];
       const row = await getAsync(query, values);
       if (row) {
-        return res.json({ message: 'Novel already exists' });
+        return res.json({ message: 'Novel already exists', id: row.id });
       } else {
         return res.json({ message: 'Novel does not exist' });
       }
