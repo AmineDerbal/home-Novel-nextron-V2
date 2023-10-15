@@ -25,6 +25,7 @@ export const serializeDb = () => {
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
   });
+
   closeDb(db);
 };
 
