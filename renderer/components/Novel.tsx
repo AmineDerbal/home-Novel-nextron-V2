@@ -2,9 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store'; // Make sure to import the correct RootState type
 import Loader from './Loader';
-import saveNovel from '../services/saveNovel';
-import checkNovel from '../services/checkNovel';
-import deleteNovel from '../services/deleteNovel';
+import { checkNovel, deleteNovel, createNovel } from '../services/novel';
 
 const Novel = () => {
   const { novelData, isLoading, hasError, error } = useSelector(
@@ -12,7 +10,7 @@ const Novel = () => {
   );
 
   const [isNovelInLibrary, setIsNovelInLibrary] = useState(false);
-  const [saveNovelTrigger, setSaveNovelTrigger] = useState(false);
+  const [saveNovelTrigger, setSaveNovelTrigger] = useState(null);
   const [novelId, setNovelId] = useState('');
 
   useEffect(() => {
@@ -30,7 +28,7 @@ const Novel = () => {
       }
     };
     fetchData();
-  }, [novelData, saveNovelTrigger]);
+  }, [novelData, saveNovelTrigger, novelId]);
 
   const isNovelEmpty = (obj: any) => {
     if (
@@ -77,7 +75,7 @@ const Novel = () => {
                 }
                 return;
               }
-              await saveNovel(novelData);
+              await createNovel(novelData);
               setSaveNovelTrigger(true);
             }}
           >
