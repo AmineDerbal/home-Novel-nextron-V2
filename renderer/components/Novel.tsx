@@ -60,14 +60,27 @@ const Novel = () => {
 
   return (
     <div className="mt-5 text-white">
-      <div className="mt-2 flex wrap gap-5">
+      <div className="mt-2 flex wrap">
         <img
           src={novelData.serieImageSrc}
           alt="cover"
           className="w-[300px] h-[300px] object-contain"
         />
         <div>
-          <div className="cursor-pointer">
+          <div
+            className="cursor-pointer flex items-center w-fit"
+            onClick={async () => {
+              if (isNovelInLibrary) {
+                const isNovelDeleted = await deleteNovel(novelId);
+                if (isNovelDeleted) {
+                  setSaveNovelTrigger(false);
+                }
+                return;
+              }
+              await saveNovel(novelData);
+              setSaveNovelTrigger(true);
+            }}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -79,6 +92,13 @@ const Novel = () => {
             >
               <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
             </svg>
+            <div className="ml-1">
+              {isNovelInLibrary ? (
+                <p className="text-blue-500">Remove from library</p>
+              ) : (
+                <p className="text-gray-400">Add to library</p>
+              )}
+            </div>
           </div>
           <h2 className="text-5xl">
             <a
@@ -100,22 +120,7 @@ const Novel = () => {
           </p>
         </div>
       </div>
-      <button
-        type="button"
-        onClick={async () => {
-          if (isNovelInLibrary) {
-            const isNovelDeleted = await deleteNovel(novelId);
-            if (isNovelDeleted) {
-              setSaveNovelTrigger(false);
-            }
-            return;
-          }
-          await saveNovel(novelData);
-          setSaveNovelTrigger(true);
-        }}
-      >
-        {isNovelInLibrary ? 'Remove from library' : 'Add to library'}
-      </button>
+
       <div>
         {novelData.chapters.map((chapter: { title: string; link: string }) => (
           <div key={`chapter-${chapter.link}`}>
