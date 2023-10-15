@@ -21,6 +21,8 @@ const handler = async (req: any, res: any) => {
       return res
         .status(500)
         .json({ error: 'An error occurred while checking the novel' });
+    } finally {
+      db.close();
     }
   }
 };
