@@ -37,7 +37,7 @@ interface NovelState {
     authorLink: string;
     lastUpdate: string;
     synopsis: string;
-    chapters: Array<{ title: string; link: string }>;
+    chapters: Array<{ title: string; link: string; updateDate: string }>;
   };
   isLoading: boolean;
   hasError: boolean;
