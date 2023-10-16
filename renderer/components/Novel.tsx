@@ -57,46 +57,22 @@ const Novel = () => {
   }
 
   return (
-    <div className="mt-5 text-white">
-      <div className="mt-2 flex wrap">
-        <img
-          src={novelData.serieImageSrc}
-          alt="cover"
-          className="w-[300px] h-[300px] object-contain"
-        />
+    <div className="my-10 text-white">
+      <div className="mt-2 flex wrap gap-8">
+        <div className="w-[300px] h-[300px]">
+          <img
+            src={novelData.serieImageSrc}
+            alt="cover"
+            className="w-full h-full object-fill"
+          />
+        </div>
         <div>
-          <div
-            className="cursor-pointer flex items-center w-fit"
-            onClick={async () => {
-              if (isNovelInLibrary) {
-                const isNovelDeleted = await deleteNovel(novelId);
-                if (isNovelDeleted) {
-                  setSaveNovelTrigger(false);
-                }
-                return;
-              }
-              await createNovel(novelData);
-              setSaveNovelTrigger(true);
-            }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              className={`w-16 h-16  ${
-                isNovelInLibrary
-                  ? 'fill-blue-500 stroke-blue-500'
-                  : 'fill-gray-900 stroke-gray-400'
-              }`}
-            >
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-            </svg>
-            <div className="ml-1">
-              {isNovelInLibrary ? (
-                <p className="text-blue-500">Remove from library</p>
-              ) : (
-                <p className="text-gray-400">Add to library</p>
-              )}
-            </div>
+          <div className="ml-1 text-xl">
+            {isNovelInLibrary ? (
+              <p className="text-blue-500">In Library</p>
+            ) : (
+              <p className="text-gray-400">Not In Library</p>
+            )}
           </div>
           <h2 className="text-5xl">
             <a
@@ -116,16 +92,50 @@ const Novel = () => {
           <p className="mt-2 text-gray-400 text-2xl">
             Last Update: {novelData.lastUpdate}
           </p>
+          <div className="mt-2 flex w-fit gap-2">
+            {isNovelInLibrary ? (
+              <button
+                className="bg-red-500 w-[110px] hover:bg-red-700 text-white text-center font-bold py-2 px-4 rounded"
+                onClick={async () => {
+                  const isNovelDeleted = await deleteNovel(novelId);
+                  if (isNovelDeleted) {
+                    setSaveNovelTrigger(false);
+                  }
+                }}
+              >
+                Delete
+              </button>
+            ) : (
+              <button
+                className="bg-green-500 w-[110px] hover:bg-green-700 text-white text-center font-bold py-2 px-4 rounded"
+                onClick={async () => {
+                  await createNovel(novelData);
+                  setSaveNovelTrigger(true);
+                }}
+              >
+                Add
+              </button>
+            )}
+            <button className="bg-blue-500 w-[110px] hover:bg-blue-700 text-white text-center font-bold py-2 px-4 rounded">
+              Download
+            </button>
+          </div>
         </div>
       </div>
 
-      <div>
-        {novelData.chapters.map((chapter: { title: string; link: string }) => (
-          <div key={`chapter-${chapter.link}`}>
-            {' '}
-            <a href={chapter.link}>{chapter.title}</a>
-          </div>
-        ))}
+      <div className="mt-10 grid grid-cols-3 gap-3">
+        {novelData.chapters.map(
+          (chapter: { title: string; link: string; updateDate: string }) => (
+            <div
+              className="text-center"
+              key={`chapter-${chapter.link}`}
+            >
+              {' '}
+              <a href={chapter.link}>{chapter.title}</a>
+              <p className="text-gray-400 text-center">{chapter.updateDate}</p>
+            </div>
+          ),
+        )}
       </div>
     </div>
   );
