@@ -58,7 +58,7 @@ const Novel = () => {
 
   return (
     <div className="my-10 text-white">
-      <div className="mt-2 flex wrap gap-8">
+      <div className="my-2 flex wrap gap-8">
         <div className="w-[300px] h-[300px]">
           <img
             src={novelData.serieImageSrc}
@@ -68,11 +68,13 @@ const Novel = () => {
         </div>
         <div>
           <div className="ml-1 text-xl">
-            {isNovelInLibrary ? (
-              <p className="text-blue-500">In Library</p>
-            ) : (
-              <p className="text-gray-400">Not In Library</p>
-            )}
+            <div className="w-fit mb-3">
+              {isNovelInLibrary ? (
+                <p className="text-blue-500">In Library</p>
+              ) : (
+                <p className="text-gray-400">Not In Library</p>
+              )}
+            </div>
           </div>
           <h2 className="text-5xl">
             <a
@@ -86,13 +88,13 @@ const Novel = () => {
               {novelData.serieName}
             </a>
           </h2>
-          <p className="mt-2 text-gray-400 text-2xl">
+          <p className="mt-3 text-gray-400 text-2xl">
             <a href={novelData.authorLink}>{novelData.authorName}</a>
           </p>
-          <p className="mt-2 text-gray-400 text-2xl">
+          <p className="my-3 text-gray-400 text-2xl">
             Last Update: {novelData.lastUpdate}
           </p>
-          <div className="mt-2 flex w-fit gap-2">
+          <div className="mt-6 flex w-fit gap-2">
             {isNovelInLibrary ? (
               <button
                 className="bg-red-500 w-[110px] hover:bg-red-700 text-white text-center font-bold py-2 px-4 rounded"
