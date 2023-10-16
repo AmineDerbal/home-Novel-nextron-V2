@@ -7,20 +7,15 @@ import { useEffect } from 'react';
 
 const Home = () => {
   useEffect(() => {
-    console.log('useEffect');
     const connect = async () => {
       try {
-        console.log('start');
         const database = await fetch('api/database');
-        const data = await database.json();
-        console.log('data', await data);
+        await database.json();
       } catch (error) {
         console.log(error);
       }
     };
-    console.log('start connect');
     connect();
-    console.log('end connect');
   }, []);
 
   return (
