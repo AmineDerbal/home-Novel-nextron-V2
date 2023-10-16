@@ -25,24 +25,33 @@ const isNextPageHref = async (page) => {
 
 const getChapterList = async (page) => {
   const chapters = await page.$$('.toc_a');
-  return chapters;
+  const chaptersUpdateDate = await page.$$('.fic_date_pub');
+  return { chapters, chaptersUpdateDate };
 };
 
-const getChapterData = async (page, chapter) => {
+const getChapterData = async (page, chapter, chaptersUpdateDate) => {
   const link = await page.evaluate((el) => el.href, chapter);
   const title = await page.evaluate((el) => el.innerHTML, chapter);
+  const updateDate = await page.evaluate(
+    (el) => el.innerHTML,
+    chaptersUpdateDate,
+  );
+  console.log(title, link, updateDate);
+
   return {
     title,
     link,
+    updateDate,
   };
 };
 
 const generateChaptersList = async (page, chaptersList = []) => {
   try {
-    const chapters = await getChapterList(page);
+    const { chapters, chaptersUpdateDate } = await getChapterList(page);
     for (let i = 0; i < chapters.length; i += 1) {
       const chapter = chapters[i];
-      chaptersList.push(await getChapterData(page, chapter));
+      const chapterUpdateDate = chaptersUpdateDate[i];
+      chaptersList.push(await getChapterData(page, chapter, chapterUpdateDate));
     }
     if ((await isNextPageHref(page)) && (await isNextPageLink(page))) {
       await page.goto(
