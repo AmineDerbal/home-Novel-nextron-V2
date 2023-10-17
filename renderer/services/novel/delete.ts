@@ -9,7 +9,7 @@ const deleteNovel = async (id: string) => {
     }),
   };
   try {
-    const response = await fetch('api/deleteNovel', options);
+    const response = await fetch('api/novel', options);
     const data = await response.json();
     if (data.message === 'Novel deleted successfully') {
       return true;

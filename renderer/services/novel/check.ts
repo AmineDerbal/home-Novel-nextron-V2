@@ -13,7 +13,7 @@ const checkNovel = async (novel: {
         novel,
       }),
     };
-    const response = await fetch('api/checkNovel', options);
+    const response = await fetch('api/novel/check', options);
     const data = await response.json();
     if (data.message === 'Novel already exists') {
       return {

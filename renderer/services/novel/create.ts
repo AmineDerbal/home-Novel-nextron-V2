@@ -21,7 +21,7 @@ const createNovel = async (novel: Novel) => {
   };
 
   try {
-    const response = await fetch('api/createNovel', options);
+    const response = await fetch('api/novel/create', options);
     const data = await response.json();
     console.log(await data);
     return data;
