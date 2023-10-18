@@ -36,8 +36,6 @@ const getChapterData = async (page, chapter, chaptersUpdateDate) => {
     (el) => el.innerHTML,
     chaptersUpdateDate,
   );
-  console.log(title, link, updateDate);
-
   return {
     title,
     link,
@@ -110,7 +108,6 @@ const getData = async (url) => {
     }
 
     const serieName = await page.$eval('.fic_title', (el) => el.innerHTML);
-    console.log('serie name', serieName);
     const serieImageSrc = await page.$eval('.fic_image img', (el) => el.src);
     const authorName = await page.$eval(
       '.auth_name_fic',
