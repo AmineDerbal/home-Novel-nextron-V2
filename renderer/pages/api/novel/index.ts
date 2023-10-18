@@ -7,11 +7,10 @@ const handler = async (req, res) => {
     try {
       const { url } = req.body;
       const response = await getData(url);
-      console.log('response', response);
-      res.json(response);
+      return res.json(response);
     } catch (error) {
       // You can send a meaningful error response to the client
-      res
+      return res
         .status(500)
         .json({ error: 'An error occurred while fetching the data' });
     }
@@ -29,9 +28,11 @@ const handler = async (req, res) => {
       return res
         .status(500)
         .json({ error: 'An error occurred while deleting the novel' });
+    } finally {
+      db.close();
     }
   }
-  res.status(400).json({ error: 'Invalid request method' });
+  return res.status(400).json({ error: 'Invalid request method' });
 };
 
 export default handler;
