@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store'; // Make sure to import the correct RootState type
+import { ipcRenderer } from 'electron';
 import Loader from './Loader';
 import { checkNovel, deleteNovel, createNovel } from '../services/novel';
 
@@ -13,6 +14,12 @@ const Novel = () => {
   const [saveNovelTrigger, setSaveNovelTrigger] = useState(null);
   const [novelId, setNovelId] = useState('');
   const [downloadModal, setDownloadModal] = useState(false);
+  const getDir = async () => {
+    const selectedDirectory = await ipcRenderer.invoke('open-directory-dialog');
+    if (selectedDirectory) {
+      return selectedDirectory;
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -132,8 +139,10 @@ const Novel = () => {
             )}
             <button
               className="bg-blue-500 w-[110px] hover:bg-blue-700 text-white text-center font-bold py-2 px-4 rounded"
-              onClick={() => {
+              onClick={async () => {
                 setDownloadModal(true);
+                const selectedDirectory = await getDir();
+                console.log(selectedDirectory);
               }}
             >
               Download
