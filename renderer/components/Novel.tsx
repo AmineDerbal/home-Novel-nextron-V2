@@ -12,6 +12,7 @@ const Novel = () => {
   const [isNovelInLibrary, setIsNovelInLibrary] = useState(false);
   const [saveNovelTrigger, setSaveNovelTrigger] = useState(null);
   const [novelId, setNovelId] = useState('');
+  const [downloadModal, setDownloadModal] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,6 +59,17 @@ const Novel = () => {
 
   return (
     <div className="my-10 text-white">
+      {downloadModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 overflow-y-auto"
+          onClick={() => setDownloadModal(false)}
+        >
+          <div className="bg-white mx-auto p-4 border border-gray-300 w-4/5 text-black">
+            Hello There
+          </div>
+        </div>
+      )}
+
       <div className="my-2 flex wrap gap-8">
         <div className="w-[300px] h-[300px]">
           <img
@@ -118,7 +130,12 @@ const Novel = () => {
                 Add
               </button>
             )}
-            <button className="bg-blue-500 w-[110px] hover:bg-blue-700 text-white text-center font-bold py-2 px-4 rounded">
+            <button
+              className="bg-blue-500 w-[110px] hover:bg-blue-700 text-white text-center font-bold py-2 px-4 rounded"
+              onClick={() => {
+                setDownloadModal(true);
+              }}
+            >
               Download
             </button>
           </div>
