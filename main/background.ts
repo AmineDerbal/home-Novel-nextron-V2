@@ -1,4 +1,4 @@
-import { app } from 'electron';
+import { app, dialog, ipcMain } from 'electron';
 import serve from 'electron-serve';
 import { createWindow } from './helpers';
 
@@ -24,6 +24,22 @@ if (isProd) {
     const port = process.argv[2];
     await mainWindow.loadURL(`http://localhost:${port}/home`);
     console.log(`Listening on http://localhost:${port}`);
+
+    ipcMain.handle('open-directory-dialog', async () => {
+      try {
+        const result = await dialog.showOpenDialog(mainWindow, {
+          properties: ['openDirectory'],
+        });
+        if (result.canceled) {
+          return null;
+        }
+        console.log('result', result);
+        return result.filePaths[0];
+      } catch (error) {
+        throw error;
+      }
+    });
+
     mainWindow.webContents.openDevTools();
   }
 })();
