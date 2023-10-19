@@ -1,6 +1,11 @@
 import { app, dialog, ipcMain } from 'electron';
 import serve from 'electron-serve';
-import { createWindow } from './helpers';
+import path from 'path';
+import { createWindow, CreateConfigJson } from './helpers';
+
+const parentDirectory = path.resolve(__dirname, '..');
+const configPath = path.join(parentDirectory, 'config.json');
+const defaultDownloadPath = path.join(process.env.USERPROFILE, 'downloads');
 
 const isProd: boolean = process.env.NODE_ENV === 'production';
 
@@ -24,6 +29,8 @@ if (isProd) {
     const port = process.argv[2];
     await mainWindow.loadURL(`http://localhost:${port}/home`);
     console.log(`Listening on http://localhost:${port}`);
+    console.log(configPath);
+    await CreateConfigJson(configPath, defaultDownloadPath);
 
     ipcMain.handle('open-directory-dialog', async () => {
       try {
