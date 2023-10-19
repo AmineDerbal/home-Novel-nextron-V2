@@ -2,8 +2,11 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store'; // Make sure to import the correct RootState type
 import { ipcRenderer } from 'electron';
+import fs from 'fs';
+import path from 'path';
 import Loader from './Loader';
 import { checkNovel, deleteNovel, createNovel } from '../services/novel';
+import folderIcon from '../assets';
 
 const Novel = () => {
   const { novelData, isLoading, hasError, error } = useSelector(
@@ -14,6 +17,9 @@ const Novel = () => {
   const [saveNovelTrigger, setSaveNovelTrigger] = useState(null);
   const [novelId, setNovelId] = useState('');
   const [downloadModal, setDownloadModal] = useState(false);
+  const [downloadPath, setDownloadPath] = useState('');
+  const configJsonPath = path.join(process.cwd(), 'config.json');
+
   const getDir = async () => {
     const selectedDirectory = await ipcRenderer.invoke('open-directory-dialog');
     if (selectedDirectory) {
@@ -37,6 +43,22 @@ const Novel = () => {
     };
     fetchData();
   }, [novelData, saveNovelTrigger, novelId]);
+
+  useEffect(() => {
+    const getDefaultDownloadPath = async () => {
+      try {
+        const data = await fs.promises.readFile(configJsonPath);
+        const jsonData = JSON.parse(data.toString());
+        const defaultDownloadPath = jsonData.defaultDownloadPath;
+        setDownloadPath(defaultDownloadPath);
+        return jsonData.defaultDownloadPath;
+      } catch (err) {
+        console.error('Error getting default download path:', err);
+        throw err;
+      }
+    };
+    getDefaultDownloadPath();
+  }, [downloadPath]);
 
   const isNovelEmpty = (obj: any) => {
     if (
@@ -71,8 +93,25 @@ const Novel = () => {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 overflow-y-auto"
           onClick={() => setDownloadModal(false)}
         >
-          <div className="bg-white mx-auto p-4 border border-gray-300 w-4/5 text-black">
-            Hello There
+          <div
+            className="bg-white mx-auto p-4 bg-gray-400 border border-gray-400 w-4/5 text-black"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="text-white text-2xl">Save Location </p>
+            <div className="flex gap-2 items-center">
+              <input
+                type="text"
+                value={downloadPath}
+                className="w-2/5 bg-white"
+                disabled
+              />
+              <img
+                className="cursor-pointer"
+                src={folderIcon.src}
+                alt="Choose Folder"
+                onClick={getDir}
+              />
+            </div>
           </div>
         </div>
       )}
@@ -141,8 +180,8 @@ const Novel = () => {
               className="bg-blue-500 w-[110px] hover:bg-blue-700 text-white text-center font-bold py-2 px-4 rounded"
               onClick={async () => {
                 setDownloadModal(true);
-                const selectedDirectory = await getDir();
-                console.log(selectedDirectory);
+                // const selectedDirectory = await getDir();
+                //console.log(selectedDirectory);
               }}
             >
               Download
