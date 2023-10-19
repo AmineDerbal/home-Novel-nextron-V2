@@ -3,7 +3,6 @@ import { promisify } from 'util';
 const handler = async (req: any, res: any) => {
   if (req.method === 'POST') {
     const { novel } = req.body;
-    console.log(novel);
     const { serieName, serieLink, authorName } = novel;
     const db = connectDb();
     const getAsync = promisify(db.get.bind(db));
