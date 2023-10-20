@@ -2,11 +2,10 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store'; // Make sure to import the correct RootState type
 import { ipcRenderer } from 'electron';
-import fs from 'fs';
-import path from 'path';
 import Loader from './Loader';
 import { checkNovel, deleteNovel, createNovel } from '../services/novel';
 import folderIcon from '../assets';
+import { getConfigJsonPath, getDefaultDownloadPath } from '../utils/config';
 
 const Novel = () => {
   const { novelData, isLoading, hasError, error } = useSelector(
@@ -18,12 +17,11 @@ const Novel = () => {
   const [novelId, setNovelId] = useState('');
   const [downloadModal, setDownloadModal] = useState(false);
   const [downloadPath, setDownloadPath] = useState('');
-  const configJsonPath = path.join(process.cwd(), 'config.json');
 
   const getDir = async () => {
     const selectedDirectory = await ipcRenderer.invoke('open-directory-dialog');
     if (selectedDirectory) {
-      return selectedDirectory;
+      console.log(selectedDirectory);
     }
   };
 
@@ -45,19 +43,15 @@ const Novel = () => {
   }, [novelData, saveNovelTrigger, novelId]);
 
   useEffect(() => {
-    const getDefaultDownloadPath = async () => {
-      try {
-        const data = await fs.promises.readFile(configJsonPath);
-        const jsonData = JSON.parse(data.toString());
-        const defaultDownloadPath = jsonData.defaultDownloadPath;
-        setDownloadPath(defaultDownloadPath);
-        return jsonData.defaultDownloadPath;
-      } catch (err) {
-        console.error('Error getting default download path:', err);
-        throw err;
+    const getDownloadPath = async () => {
+      const defaultDownloadPath = await getDefaultDownloadPath(
+        getConfigJsonPath(),
+      );
+      if (defaultDownloadPath.success) {
+        setDownloadPath(defaultDownloadPath.defaultDownloadPath);
       }
     };
-    getDefaultDownloadPath();
+    getDownloadPath();
   }, [downloadPath]);
 
   const isNovelEmpty = (obj: any) => {
@@ -94,7 +88,7 @@ const Novel = () => {
           onClick={() => setDownloadModal(false)}
         >
           <div
-            className="bg-white mx-auto p-4 bg-gray-400 border border-gray-400 w-4/5 text-black"
+            className="bg-white mx-auto px-4 py-10 bg-gray-400 w-3/5 text-black"
             onClick={(e) => e.stopPropagation()}
           >
             <p className="text-white text-2xl">Save Location </p>
@@ -102,7 +96,7 @@ const Novel = () => {
               <input
                 type="text"
                 value={downloadPath}
-                className="w-2/5 bg-white"
+                className="w-4/5 bg-white"
                 disabled
               />
               <img
