@@ -5,7 +5,10 @@ import { ipcRenderer } from 'electron';
 import Loader from './Loader';
 import { checkNovel, deleteNovel, createNovel } from '../services/novel';
 import folderIcon from '../assets';
-import { getConfigJsonPath, getDefaultDownloadPath } from '../utils/config';
+import {
+  getDefaultDownloadPath,
+  updateDefaultDownloadPath,
+} from '../utils/config';
 
 const Novel = () => {
   const { novelData, isLoading, hasError, error } = useSelector(
@@ -20,8 +23,11 @@ const Novel = () => {
 
   const getDir = async () => {
     const selectedDirectory = await ipcRenderer.invoke('open-directory-dialog');
-    if (selectedDirectory) {
-      console.log(selectedDirectory);
+    if (
+      selectedDirectory &&
+      (await updateDefaultDownloadPath(selectedDirectory))
+    ) {
+      setDownloadPath(selectedDirectory);
     }
   };
 
@@ -44,9 +50,7 @@ const Novel = () => {
 
   useEffect(() => {
     const getDownloadPath = async () => {
-      const defaultDownloadPath = await getDefaultDownloadPath(
-        getConfigJsonPath(),
-      );
+      const defaultDownloadPath = await getDefaultDownloadPath();
       if (defaultDownloadPath.success) {
         setDownloadPath(defaultDownloadPath.defaultDownloadPath);
       }
