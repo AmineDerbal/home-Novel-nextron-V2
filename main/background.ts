@@ -3,8 +3,7 @@ import serve from 'electron-serve';
 import path from 'path';
 import { createWindow, CreateConfigJson } from './helpers';
 
-const parentDirectory = path.resolve(__dirname, '..');
-const configPath = path.join(parentDirectory, 'config.json');
+const configPath = path.join(process.cwd(), 'config.json');
 const defaultDownloadPath = path.join(process.env.USERPROFILE, 'downloads');
 
 const isProd: boolean = process.env.NODE_ENV === 'production';
@@ -32,10 +31,11 @@ if (isProd) {
     console.log(configPath);
     await CreateConfigJson(configPath, defaultDownloadPath);
 
-    ipcMain.handle('open-directory-dialog', async () => {
+    ipcMain.handle('open-directory-dialog', async (options: any) => {
       try {
         const result = await dialog.showOpenDialog(mainWindow, {
           properties: ['openDirectory'],
+          defaultPath: options.defaultPath,
         });
         if (result.canceled) {
           return null;
