@@ -92,15 +92,15 @@ const Novel = () => {
           onClick={() => setDownloadModal(false)}
         >
           <div
-            className="bg-white mx-auto px-4 py-10 bg-gray-400 w-3/5 text-black"
+            className="bg-white mx-auto px-4 py-10  w-3/5 text-black"
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="text-white text-2xl">Save Location </p>
+            <p className="text-2xl">Save Location </p>
             <div className="flex gap-2 items-center">
               <input
                 type="text"
                 value={downloadPath}
-                className="w-4/5 bg-white"
+                className="w-4/5 bg-white border border-black p-1"
                 disabled
               />
               <img
@@ -109,6 +109,17 @@ const Novel = () => {
                 alt="Choose Folder"
                 onClick={getDir}
               />
+            </div>
+            <div className=" mt-4 px-2 flex justify-end gap-2">
+              <button className=" w-[110px] bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Download
+              </button>
+              <button
+                className=" w-[110px] bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                onClick={() => setDownloadModal(false)}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>
