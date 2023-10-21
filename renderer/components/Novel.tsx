@@ -22,12 +22,19 @@ const Novel = () => {
   const [downloadPath, setDownloadPath] = useState('');
 
   const getDir = async () => {
-    const selectedDirectory = await ipcRenderer.invoke('open-directory-dialog');
-    if (
-      selectedDirectory &&
-      (await updateDefaultDownloadPath(selectedDirectory))
-    ) {
-      setDownloadPath(selectedDirectory);
+    const defaultDownloadPath = await getDefaultDownloadPath();
+    if (defaultDownloadPath.success) {
+      const defaultPath = defaultDownloadPath.defaultDownloadPath;
+      const selectedDirectory = await ipcRenderer.invoke(
+        'open-directory-dialog',
+        { defaultPath },
+      );
+      if (
+        selectedDirectory &&
+        (await updateDefaultDownloadPath(selectedDirectory))
+      ) {
+        setDownloadPath(selectedDirectory);
+      }
     }
   };
 
