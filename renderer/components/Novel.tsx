@@ -5,6 +5,7 @@ import { ipcRenderer } from 'electron';
 import Loader from './Loader';
 import { checkNovel, deleteNovel, createNovel } from '../services/novel';
 import folderIcon from '../assets';
+import downlodaNovel from '../services/downloadNovel';
 import {
   getDefaultDownloadPath,
   updateDefaultDownloadPath,
@@ -118,7 +119,14 @@ const Novel = () => {
               />
             </div>
             <div className=" mt-4 px-2 flex justify-end gap-2">
-              <button className=" w-[110px] bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              <button
+                className=" w-[110px] bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                onClick={() => {
+                  async () => {
+                    await downlodaNovel(novelData);
+                  };
+                }}
+              >
                 Download
               </button>
               <button
@@ -196,8 +204,6 @@ const Novel = () => {
               className="bg-blue-500 w-[110px] hover:bg-blue-700 text-white text-center font-bold py-2 px-4 rounded"
               onClick={async () => {
                 setDownloadModal(true);
-                // const selectedDirectory = await getDir();
-                //console.log(selectedDirectory);
               }}
             >
               Download
