@@ -31,9 +31,9 @@ const getChapterList = async (page) => {
 
 const getChapterData = async (page, chapter, chaptersUpdateDate) => {
   const link = await page.evaluate((el) => el.href, chapter);
-  const title = await page.evaluate((el) => el.innerHTML, chapter);
+  const title = await page.evaluate((el) => el.textContent, chapter);
   const updateDate = await page.evaluate(
-    (el) => el.innerHTML,
+    (el) => el.textContent,
     chaptersUpdateDate,
   );
   return {
@@ -107,7 +107,7 @@ const getData = async (url) => {
       [, serieLink] = serieLink.match(serieMatch);
     }
 
-    const serieName = await page.$eval('.fic_title', (el) => el.innerHTML);
+    const serieName = await page.$eval('.fic_title', (el) => el.textContent);
     const serieImageSrc = await page.$eval('.fic_image img', (el) => el.src);
     const authorName = await page.$eval(
       '.auth_name_fic',
