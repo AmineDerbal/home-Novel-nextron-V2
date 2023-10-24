@@ -3,6 +3,53 @@ import fs from 'fs';
 import axios from 'axios';
 import { getDefaultDownloadPath } from '../utils/config';
 
+const movePdfDocDown = (doc: PDFDocument, down: number) => {
+  doc.moveDown(down);
+};
+const addSerieInfoToPdf = async (
+  doc: PDFDocument,
+  boldText: string,
+  defaultText: string,
+  defaultFontSize = 16,
+  color = 'black',
+  defaultFontStyle = 'Times-Roman',
+  boldFontStyle = 'Times-Bold',
+) => {
+  doc
+    .fontSize(defaultFontSize)
+    .font(boldFontStyle)
+    .text(boldText, {
+      continued: true,
+    })
+    .fillColor(color)
+    .font(defaultFontStyle)
+    .text(defaultText)
+    .fillColor('black');
+};
+
+const generateNovelInfos = async (
+  doc: PDFDocument,
+  authorName: string,
+  serieLink: string,
+  authorLink: string,
+  lastUpdate: string,
+  chaptersNumber: number,
+  synopsis: string,
+) => {
+  addSerieInfoToPdf(doc, 'Author : ', authorName);
+  movePdfDocDown(doc, 0.5);
+  addSerieInfoToPdf(doc, 'Serie Link : ', serieLink, 16, 'blue');
+  movePdfDocDown(doc, 0.5);
+  addSerieInfoToPdf(doc, 'Author Link : ', authorLink, 16, 'blue');
+  movePdfDocDown(doc, 0.5);
+  addSerieInfoToPdf(doc, 'Last Update : ', lastUpdate);
+  movePdfDocDown(doc, 0.5);
+  addSerieInfoToPdf(doc, 'number of chapters : ', chaptersNumber.toString());
+  movePdfDocDown(doc, 0.5);
+  doc.addPage();
+  addSerieInfoToPdf(doc, 'Synopsis : ', synopsis);
+};
+
 const pipePdf = async (doc: PDFDocument, serieName: string) => {
   const path = (await getDefaultDownloadPath()).defaultDownloadPath;
   console.log('path', path);
@@ -31,7 +78,7 @@ const generateSerieImage = async (doc: PDFDocument, serieImageSrc: string) => {
       width: imageWidth,
     })
     .stroke();
-  doc.moveDown(0.5);
+  movePdfDocDown(doc, 0.5);
 };
 
 const createPdf = () => {
@@ -40,4 +87,4 @@ const createPdf = () => {
   return doc;
 };
 
-export { createPdf, pipePdf, generateSerieImage };
+export { createPdf, pipePdf, generateSerieImage, generateNovelInfos };
