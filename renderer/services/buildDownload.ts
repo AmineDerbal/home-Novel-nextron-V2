@@ -1,5 +1,10 @@
 import executePuppeteer from './executePuppeteer';
-import { createPdf, pipePdf } from './downloadPdf';
+import {
+  createPdf,
+  pipePdf,
+  generateSerieImage,
+  generateNovelInfos,
+} from './downloadPdf';
 
 type Novel = {
   serieName: string;
@@ -31,7 +36,17 @@ const buildDownload = async (novel: Novel) => {
     } = novel;
 
     let doc = createPdf();
-    doc = await pipePdf(doc, serieName);
+    await pipePdf(doc, serieName);
+    await generateSerieImage(doc, serieImageSrc);
+    await generateNovelInfos(
+      doc,
+      authorName,
+      serieLink,
+      authorLink,
+      lastUpdate,
+      chapters.length,
+      synopsis,
+    );
     doc.end();
     browser.close();
     return { success: true };
