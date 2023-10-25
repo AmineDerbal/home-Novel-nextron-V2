@@ -5,6 +5,7 @@ const handler = async (req: any, res: any) => {
     const { novel } = req.body;
     try {
       const response = await buildDownload(novel);
+      return res.json({ success: 'success' });
     } catch (error) {
       return res
         .status(500)
