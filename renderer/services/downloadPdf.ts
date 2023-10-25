@@ -6,7 +6,31 @@ import { getDefaultDownloadPath } from '../utils/config';
 const movePdfDocDown = (doc: PDFDocument, down: number) => {
   doc.moveDown(down);
 };
-const addSerieInfoToPdf = async (
+
+const addHyperLinkToPdf = (
+  doc: PDFDocument,
+  defaultText: string,
+  link: string,
+  inputText: string,
+  defaultFontSize = 16,
+  color = 'blue',
+  defaultFontStyle = 'Times-Roman',
+  boldFontStyle = 'Times-Bold',
+) => {
+  doc
+    .fontSize(defaultFontSize)
+    .font(boldFontStyle)
+    .text(defaultText, {
+      continued: true,
+    })
+    .font(defaultFontStyle)
+    .fillColor(color)
+    .text(inputText, {
+      link: link,
+      underline: true,
+    });
+};
+const addTextToPdf = async (
   doc: PDFDocument,
   boldText: string,
   defaultText: string,
@@ -18,6 +42,7 @@ const addSerieInfoToPdf = async (
   doc
     .fontSize(defaultFontSize)
     .font(boldFontStyle)
+    .fillColor('black')
     .text(boldText, {
       continued: true,
     })
@@ -36,18 +61,16 @@ const generateNovelInfos = async (
   chaptersNumber: number,
   synopsis: string,
 ) => {
-  addSerieInfoToPdf(doc, 'Author : ', authorName);
+  addHyperLinkToPdf(doc, 'Author : ', authorLink, authorName, 16, 'blue');
   movePdfDocDown(doc, 0.5);
-  addSerieInfoToPdf(doc, 'Serie Link : ', serieLink, 16, 'blue');
+  addTextToPdf(doc, 'Serie Link : ', serieLink, 16, 'blue');
   movePdfDocDown(doc, 0.5);
-  addSerieInfoToPdf(doc, 'Author Link : ', authorLink, 16, 'blue');
+  addTextToPdf(doc, 'Last Update : ', lastUpdate);
   movePdfDocDown(doc, 0.5);
-  addSerieInfoToPdf(doc, 'Last Update : ', lastUpdate);
-  movePdfDocDown(doc, 0.5);
-  addSerieInfoToPdf(doc, 'number of chapters : ', chaptersNumber.toString());
+  addTextToPdf(doc, 'number of chapters : ', chaptersNumber.toString());
   movePdfDocDown(doc, 0.5);
   doc.addPage();
-  addSerieInfoToPdf(doc, 'Synopsis : ', synopsis);
+  addTextToPdf(doc, 'Synopsis : ', synopsis);
 };
 
 const pipePdf = async (doc: PDFDocument, serieName: string) => {
