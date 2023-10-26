@@ -1,9 +1,10 @@
-import executePuppeteer from './executePuppeteer';
+import { openBrowser } from './executePuppeteer';
 import {
   createPdf,
   pipePdf,
   generateSerieImage,
   generateNovelInfos,
+  generateNovelChapters,
 } from './downloadPdf';
 
 type Novel = {
@@ -19,11 +20,11 @@ type Novel = {
 
 const buildDownload = async (novel: Novel) => {
   try {
-    const callPuppeteer = await executePuppeteer();
-    if (!callPuppeteer.success) {
-      return { success: false, error: callPuppeteer.error };
+    const browser = await openBrowser();
+    if (!browser) {
+      console.log('Unable to open browser');
+      return { success: false, error: 'Unable to open browser' };
     }
-    const { page, browser } = callPuppeteer;
     const {
       serieName,
       serieLink,
@@ -47,8 +48,9 @@ const buildDownload = async (novel: Novel) => {
       chapters.length,
       synopsis,
     );
+    await generateNovelChapters(doc, browser, chapters.reverse());
     doc.end();
-    browser.close();
+
     return { success: true };
   } catch (error) {
     return { success: false, error };
