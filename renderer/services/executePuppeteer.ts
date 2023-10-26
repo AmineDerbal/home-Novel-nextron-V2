@@ -1,15 +1,22 @@
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
-import { executablePath } from 'puppeteer';
+import { Browser, executablePath } from 'puppeteer';
 
 puppeteer.use(StealthPlugin());
 
-const executePuppeteer = async () => {
-  const browser = await puppeteer.launch({
-    executablePath: executablePath(),
-    headless: false,
-  });
+const openBrowser = async () => {
+  try {
+    const browser = await puppeteer.launch({
+      executablePath: executablePath(),
+      headless: false,
+    });
+    return browser;
+  } catch (error) {
+    return false;
+  }
+};
 
+const openPage = async (browser: Browser) => {
   try {
     const page = await browser.newPage();
     await page.setExtraHTTPHeaders({
@@ -22,10 +29,10 @@ const executePuppeteer = async () => {
       'accept-language': 'en-US,en;q=0.9,en;q=0.8',
     });
     await page.setViewport({ width: 1280, height: 720 });
-    return { success: true, browser, page };
+    return { success: true, page };
   } catch (error) {
     return { success: false, error };
   }
 };
 
-export default executePuppeteer;
+export { openBrowser, openPage };
