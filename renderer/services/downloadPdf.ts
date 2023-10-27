@@ -2,6 +2,9 @@ import PDFDocument from 'pdfkit';
 import fs from 'fs';
 import axios from 'axios';
 import { getDefaultDownloadPath } from '../utils/config';
+import { Browser, Page } from 'puppeteer';
+import { openPage } from './executePuppeteer';
+import { get } from 'http';
 
 const movePdfDocDown = (doc: PDFDocument, down: number) => {
   doc.moveDown(down);
@@ -110,4 +113,92 @@ const createPdf = () => {
   return doc;
 };
 
-export { createPdf, pipePdf, generateSerieImage, generateNovelInfos };
+const parseElementText = async (
+  page: Page,
+  doc: PDFDocument,
+  element: any,
+  align = 'left',
+) => {
+  const tag = await page.evaluate((el) => el.tagName, element);
+  console.log(tag);
+  switch (tag) {
+    case 'DIV':
+      const style = await page.evaluate(
+        (el) => getComputedStyle(el).textAlign,
+        element,
+      );
+      const newElements = await element.$$(':scope > *');
+
+      for (const newElement of newElements) {
+        if (style && style === '-webkit-center') {
+          await parseElementText(page, doc, newElement, 'center');
+        } else {
+          await parseElementText(page, doc, newElement);
+        }
+      }
+
+      break;
+    case 'P':
+      const text = await page.evaluate((el) => el.textContent, element);
+      console.log(text);
+      doc.font('Times-Roman').fontSize(16).text(text, { align, lineGap: 1.2 });
+      // if (text.trim() !== '') {
+      //   //console.log(text);
+      //   doc
+      //     .font('Times-Roman')
+      //     .color('black')
+      //     .fontSize(16)
+      //     .text(text, { align });
+      // } else {
+      //   console.log('this does not contain text');
+      // }
+      break;
+    case 'IMG':
+      break;
+    default:
+      break;
+  }
+};
+
+const addChapterToPdf = async (
+  doc: PDFDocument,
+  browser: Browser,
+  title: string,
+  link: string,
+) => {
+  const newPage = await openPage(browser);
+  if (!newPage.success) {
+    throw new Error('an error has occured');
+  }
+  const { page } = newPage;
+  const response = await page.goto(link, {
+    waitUntil: 'domcontentloaded',
+    timeout: 0,
+  });
+  doc.addPage();
+  doc.font('Times-Bold').fontSize(25).text(title, { align: 'center' });
+  const chapterContent = await page.$$('#chp_raw > *');
+  console.log(title);
+  for (const element of chapterContent) {
+    await parseElementText(page, doc, element);
+  }
+  page.close();
+};
+const generateNovelChapters = async (
+  doc: PDFDocument,
+  browser: Browser,
+  chapters: Array<{ title: string; link: string; updateDate: string }>,
+) => {
+  for (const chapter of chapters) {
+    const { title, link } = chapter;
+    await addChapterToPdf(doc, browser, title, link);
+  }
+};
+
+export {
+  createPdf,
+  pipePdf,
+  generateSerieImage,
+  generateNovelInfos,
+  generateNovelChapters,
+};
