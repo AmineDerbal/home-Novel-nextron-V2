@@ -4,7 +4,6 @@ import axios from 'axios';
 import { getDefaultDownloadPath } from '../utils/config';
 import { Browser, Page } from 'puppeteer';
 import { openPage } from './executePuppeteer';
-import { get } from 'http';
 
 const movePdfDocDown = (doc: PDFDocument, down: number) => {
   doc.moveDown(down);
@@ -78,7 +77,6 @@ const generateNovelInfos = async (
 
 const pipePdf = async (doc: PDFDocument, serieName: string) => {
   const path = (await getDefaultDownloadPath()).defaultDownloadPath;
-  console.log('path', path);
   doc.pipe(
     fs.createWriteStream(
       `${path}/${serieName.replace(/[^a-zA-Z0-9 ]/g, '')}.pdf`,
@@ -95,9 +93,12 @@ const fetchImage = async (src: string) => {
   return image.data;
 };
 
-const generateSerieImage = async (doc: PDFDocument, serieImageSrc: string) => {
+const generateSerieImage = async (
+  doc: PDFDocument,
+  serieImageSrc: string,
+  imageWidth: number,
+) => {
   const image = await fetchImage(serieImageSrc);
-  const imageWidth = 180;
 
   doc
     .image(image, doc.page.width / 2 - imageWidth / 2, doc.y, {
@@ -120,7 +121,6 @@ const parseElementText = async (
   align = 'left',
 ) => {
   const tag = await page.evaluate((el) => el.tagName, element);
-  console.log(tag);
   switch (tag) {
     case 'DIV':
       const style = await page.evaluate(
@@ -139,22 +139,27 @@ const parseElementText = async (
 
       break;
     case 'P':
+      const img = await element.$(':scope > img');
+      if (img) {
+        console.log('it has an img');
+        await parseElementText(page, doc, img, align);
+      }
       const text = await page.evaluate((el) => el.textContent, element);
-      console.log(text);
-      doc.font('Times-Roman').fontSize(16).text(text, { align, lineGap: 1.2 });
-      // if (text.trim() !== '') {
-      //   //console.log(text);
-      //   doc
-      //     .font('Times-Roman')
-      //     .color('black')
-      //     .fontSize(16)
-      //     .text(text, { align });
-      // } else {
-      //   console.log('this does not contain text');
-      // }
+      doc.font('Times-Roman').fontSize(16).text(text, { align, lineGap: 2 });
+
       break;
     case 'IMG':
-      break;
+      const src = await page.evaluate((el) => el.src, element);
+      console.log(src);
+      try {
+        const response = await axios.head(src, { timeout: 10000 });
+        if (response && response.status === 200) {
+          await generateSerieImage(doc, src, 300);
+        }
+        break;
+      } catch (error) {
+        break;
+      }
     default:
       break;
   }
