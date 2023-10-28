@@ -38,7 +38,7 @@ const buildDownload = async (novel: Novel) => {
 
     let doc = createPdf();
     await pipePdf(doc, serieName);
-    await generateSerieImage(doc, serieImageSrc);
+    await generateSerieImage(doc, serieImageSrc, 200);
     await generateNovelInfos(
       doc,
       authorName,
@@ -49,6 +49,7 @@ const buildDownload = async (novel: Novel) => {
       synopsis,
     );
     await generateNovelChapters(doc, browser, chapters.reverse());
+    browser.close();
     doc.end();
 
     return { success: true };
