@@ -1,47 +1,21 @@
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store'; // Make sure to import the correct RootState type
-import { ipcRenderer } from 'electron';
 import Loader from './Loader';
+import DownloadModal from './downloadModal';
 import { checkNovel, deleteNovel, createNovel } from '../services/novel';
-import folderIcon from '../assets';
-import downlodaNovel from '../services/downloadNovel';
-import {
-  getDefaultDownloadPath,
-  updateDefaultDownloadPath,
-} from '../utils/config';
+import { toggleDownloadModal } from '../redux/modal/modalSlice';
 
 const Novel = () => {
   const { novelData, isLoading, hasError, error } = useSelector(
     (state: RootState) => state.novel,
   );
+  const { downloadModal } = useSelector((state: RootState) => state.modal);
+  const dispatch = useDispatch();
 
   const [isNovelInLibrary, setIsNovelInLibrary] = useState(false);
   const [saveNovelTrigger, setSaveNovelTrigger] = useState(null);
   const [novelId, setNovelId] = useState('');
-  const [downloadModal, setDownloadModal] = useState(false);
-  const [downloadPath, setDownloadPath] = useState('');
-
-  const getDir = async () => {
-    const defaultDownloadPath = await getDefaultDownloadPath();
-    if (defaultDownloadPath.success) {
-      const defaultPath = defaultDownloadPath.defaultDownloadPath;
-      const selectedDirectory = await ipcRenderer.invoke(
-        'open-directory-dialog',
-        { defaultPath },
-      );
-      if (
-        selectedDirectory &&
-        (await updateDefaultDownloadPath(selectedDirectory))
-      ) {
-        setDownloadPath(selectedDirectory);
-      }
-    }
-  };
-
-  const startDownload = async () => {
-    await downlodaNovel(novelData);
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,16 +33,6 @@ const Novel = () => {
     };
     fetchData();
   }, [novelData, saveNovelTrigger, novelId]);
-
-  useEffect(() => {
-    const getDownloadPath = async () => {
-      const defaultDownloadPath = await getDefaultDownloadPath();
-      if (defaultDownloadPath.success) {
-        setDownloadPath(defaultDownloadPath.defaultDownloadPath);
-      }
-    };
-    getDownloadPath();
-  }, [downloadPath]);
 
   const isNovelEmpty = (obj: any) => {
     if (
@@ -98,49 +62,7 @@ const Novel = () => {
 
   return (
     <div className="my-10 text-white">
-      {downloadModal && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 overflow-y-auto"
-          onClick={() => setDownloadModal(false)}
-        >
-          <div
-            className="bg-white mx-auto px-4 py-10  w-3/5 text-black"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <p className="text-2xl">Save Location </p>
-            <div className="flex gap-2 items-center">
-              <input
-                type="text"
-                value={downloadPath}
-                className="w-4/5 bg-white border border-black p-1"
-                disabled
-              />
-              <img
-                className="cursor-pointer"
-                src={folderIcon.src}
-                alt="Choose Folder"
-                onClick={getDir}
-              />
-            </div>
-            <div className=" mt-4 px-2 flex justify-end gap-2">
-              <button
-                className=" w-[110px] bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                onClick={() => {
-                  startDownload();
-                }}
-              >
-                Download
-              </button>
-              <button
-                className=" w-[110px] bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                onClick={() => setDownloadModal(false)}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {downloadModal && <DownloadModal />}
 
       <div className="my-2 flex wrap gap-8">
         <div className="w-[300px] h-[300px]">
@@ -204,8 +126,8 @@ const Novel = () => {
             )}
             <button
               className="bg-blue-500 w-[110px] hover:bg-blue-700 text-white text-center font-bold py-2 px-4 rounded"
-              onClick={async () => {
-                setDownloadModal(true);
+              onClick={() => {
+                dispatch(toggleDownloadModal(true));
               }}
             >
               Download
