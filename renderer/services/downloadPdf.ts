@@ -141,20 +141,20 @@ const parseElementText = async (
     case 'P':
       const img = await element.$(':scope > img');
       if (img) {
-        console.log('it has an img');
         await parseElementText(page, doc, img, align);
       }
       const text = await page.evaluate((el) => el.textContent, element);
       doc.font('Times-Roman').fontSize(16).text(text, { align, lineGap: 2 });
+      movePdfDocDown(doc, 0.5);
 
       break;
     case 'IMG':
       const src = await page.evaluate((el) => el.src, element);
-      console.log(src);
       try {
         const response = await axios.head(src, { timeout: 10000 });
         if (response && response.status === 200) {
           await generateSerieImage(doc, src, 300);
+          movePdfDocDown(doc, 0.5);
         }
         break;
       } catch (error) {
@@ -182,6 +182,7 @@ const addChapterToPdf = async (
   });
   doc.addPage();
   doc.font('Times-Bold').fontSize(25).text(title, { align: 'center' });
+  movePdfDocDown(doc, 0.5);
   const chapterContent = await page.$$('#chp_raw > *');
   console.log(title);
   for (const element of chapterContent) {
