@@ -47,8 +47,14 @@ const DownloadModal = () => {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 overflow-y-auto"
-      // onClick={() => setDownloadModal(false)}
-      onClick={() => dispatch(toggleDownloadModal(false))}
+      onClick={() =>
+        dispatch(
+          toggleDownloadModal({
+            type: 'download',
+            downloadModal: false,
+          }),
+        )
+      }
     >
       <div
         className="bg-white mx-auto px-4 py-10  w-3/5 text-black"
@@ -80,8 +86,14 @@ const DownloadModal = () => {
           </button>
           <button
             className=" w-[110px] bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-            // onClick={() => setDownloadModal(false)}
-            onClick={() => dispatch(toggleDownloadModal(false))}
+            onClick={() =>
+              dispatch(
+                toggleDownloadModal({
+                  type: 'download',
+                  downloadModal: false,
+                }),
+              )
+            }
           >
             Cancel
           </button>

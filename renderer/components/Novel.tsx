@@ -127,7 +127,12 @@ const Novel = () => {
             <button
               className="bg-blue-500 w-[110px] hover:bg-blue-700 text-white text-center font-bold py-2 px-4 rounded"
               onClick={() => {
-                dispatch(toggleDownloadModal(true));
+                dispatch(
+                  toggleDownloadModal({
+                    type: 'download',
+                    downloadModal: true,
+                  }),
+                );
               }}
             >
               Download
