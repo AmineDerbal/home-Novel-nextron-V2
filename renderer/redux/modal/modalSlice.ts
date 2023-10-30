@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   downloadModal: false,
+  progressModal: false,
 };
 
 const modalSlice = createSlice({
