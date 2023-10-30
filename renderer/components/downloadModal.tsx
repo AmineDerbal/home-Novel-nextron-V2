@@ -57,7 +57,7 @@ const DownloadModal = () => {
       }
     >
       <div
-        className="bg-white mx-auto px-4 py-10  w-3/5 text-black"
+        className="bg-white mx-auto px-4 py-10 w-3/5 text-black"
         onClick={(e) => e.stopPropagation()}
       >
         <p className="text-2xl">Save Location </p>
