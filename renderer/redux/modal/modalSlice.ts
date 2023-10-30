@@ -9,10 +9,16 @@ const modalSlice = createSlice({
   initialState,
   reducers: {
     toggleDownloadModal: (state, action) => {
-      const downloadModal = action.payload;
+      const { type } = action.payload;
+      if (type === 'download') {
+        const { downloadModal } = action.payload;
+        return {
+          ...state,
+          downloadModal,
+        };
+      }
       return {
         ...state,
-        downloadModal,
       };
     },
   },
