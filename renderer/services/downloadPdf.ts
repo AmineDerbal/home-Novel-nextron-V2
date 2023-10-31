@@ -4,6 +4,7 @@ import axios from 'axios';
 import { getDefaultDownloadPath } from '../utils/config';
 import { Browser, Page } from 'puppeteer';
 import { openPage } from './executePuppeteer';
+import { updateProgress } from './progress';
 
 const movePdfDocDown = (doc: PDFDocument, down: number) => {
   doc.moveDown(down);
@@ -194,10 +195,22 @@ const generateNovelChapters = async (
   doc: PDFDocument,
   browser: Browser,
   chapters: Array<{ title: string; link: string; updateDate: string }>,
+  novel: {
+    serieName: string;
+    numberOfChapters: number;
+  },
 ) => {
+  let currentChapter = 0;
+  await updateProgress(novel.serieName, currentChapter, novel.numberOfChapters);
   for (const chapter of chapters) {
     const { title, link } = chapter;
     await addChapterToPdf(doc, browser, title, link);
+    currentChapter += 1;
+    await updateProgress(
+      novel.serieName,
+      currentChapter,
+      novel.numberOfChapters,
+    );
   }
 };
 
