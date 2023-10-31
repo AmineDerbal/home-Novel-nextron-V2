@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../redux/store'; // Make sure to import the correct RootState type
+import { RootState } from '../../redux/store'; // Make sure to import the correct RootState type
 import { ipcRenderer } from 'electron';
-import { toggleDownloadModal } from '../redux/modal/modalSlice';
+import { toggleDownloadModal } from '../../redux/modal/modalSlice';
 import {
   getDefaultDownloadPath,
   updateDefaultDownloadPath,
-} from '../utils/config';
-import downlodaNovel from '../services/downloadNovel';
-import folderIcon from '../assets';
+} from '../../utils/config';
+import downlodaNovel from '../../services/downloadNovel';
+import folderIcon from '../../assets';
 
 const DownloadModal = () => {
   const { novelData } = useSelector((state: RootState) => state.novel);
