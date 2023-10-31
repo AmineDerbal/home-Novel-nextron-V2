@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store'; // Make sure to import the correct RootState type
 import Loader from './Loader';
-import DownloadModal from './DownloadModal';
+import { DownloadModal } from './modals';
 import { checkNovel, deleteNovel, createNovel } from '../services/novel';
 import { toggleDownloadModal } from '../redux/modal/modalSlice';
 
