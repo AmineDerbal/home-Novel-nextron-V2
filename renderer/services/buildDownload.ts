@@ -48,7 +48,10 @@ const buildDownload = async (novel: Novel) => {
       chapters.length,
       synopsis,
     );
-    await generateNovelChapters(doc, browser, chapters.reverse());
+    await generateNovelChapters(doc, browser, chapters.reverse(), {
+      serieName,
+      numberOfChapters: chapters.length,
+    });
     browser.close();
     doc.end();
 
