@@ -12,21 +12,23 @@ const updateProgress = async (
 
   const options = {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify({
       progress,
     }),
   };
-  const response = await fetch('api/novel/progress', options);
+  const response = await fetch(
+    'http://localhost:8888/api/novel/progress',
+    options,
+  );
   const data = await response.json();
   return data;
 };
 
 const getProgress = async () => {
-  const response = await fetch('api/novel/progress');
+  console.log('getProgress');
+  const response = await fetch('http://localhost:8888/api/novel/progress');
   const data = await response.json();
+  console.log(data);
   return data;
 };
 
