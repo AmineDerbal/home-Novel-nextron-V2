@@ -18,6 +18,13 @@ const modalSlice = createSlice({
           downloadModal,
         };
       }
+      if (type === 'progress') {
+        const { progressModal } = action.payload;
+        return {
+          ...state,
+          progressModal,
+        };
+      }
       return {
         ...state,
       };
