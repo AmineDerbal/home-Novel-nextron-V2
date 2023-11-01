@@ -52,8 +52,8 @@ const buildDownload = async (novel: Novel) => {
       serieName,
       numberOfChapters: chapters.length,
     });
-    browser.close();
     doc.end();
+    browser.close();
 
     return { success: true };
   } catch (error) {
