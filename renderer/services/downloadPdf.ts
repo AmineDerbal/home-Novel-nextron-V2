@@ -4,7 +4,7 @@ import axios from 'axios';
 import { getDefaultDownloadPath } from '../utils/config';
 import { Browser, Page } from 'puppeteer';
 import { openPage } from './executePuppeteer';
-import { updateProgress } from './progress';
+import { updateProgress } from './novel';
 
 const movePdfDocDown = (doc: PDFDocument, down: number) => {
   doc.moveDown(down);
