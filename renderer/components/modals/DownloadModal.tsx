@@ -6,6 +6,7 @@ import { toggleModal } from '../../redux/modal/modalSlice';
 import {
   getDefaultDownloadPath,
   updateDefaultDownloadPath,
+  updateDownloadProgress,
 } from '../../utils/config';
 import downlodaNovel from '../../services/downloadNovel';
 import folderIcon from '../../assets';
@@ -78,7 +79,13 @@ const DownloadModal = () => {
         <div className=" mt-4 px-2 flex justify-end gap-2">
           <button
             className=" w-[110px] bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            onClick={() => {
+            onClick={async () => {
+              await updateDownloadProgress({
+                novelName: '',
+                numberOfChapters: 0,
+                currentChapter: 0,
+                progress: 0,
+              });
               dispatch(
                 toggleModal({
                   type: 'progress',
