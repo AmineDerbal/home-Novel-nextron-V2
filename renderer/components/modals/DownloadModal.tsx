@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../redux/store'; // Make sure to import the correct RootState type
 import { ipcRenderer } from 'electron';
-import { toggleDownloadModal } from '../../redux/modal/modalSlice';
+import { toggleModal } from '../../redux/modal/modalSlice';
 import {
   getDefaultDownloadPath,
   updateDefaultDownloadPath,
@@ -49,7 +49,7 @@ const DownloadModal = () => {
       className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 overflow-y-auto"
       onClick={() =>
         dispatch(
-          toggleDownloadModal({
+          toggleModal({
             type: 'download',
             downloadModal: false,
           }),
@@ -79,6 +79,12 @@ const DownloadModal = () => {
           <button
             className=" w-[110px] bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             onClick={() => {
+              dispatch(
+                toggleModal({
+                  type: 'progress',
+                  progressModal: true,
+                }),
+              );
               startDownload();
             }}
           >
@@ -88,7 +94,7 @@ const DownloadModal = () => {
             className=" w-[110px] bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
             onClick={() =>
               dispatch(
-                toggleDownloadModal({
+                toggleModal({
                   type: 'download',
                   downloadModal: false,
                 }),
