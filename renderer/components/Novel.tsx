@@ -2,15 +2,17 @@ import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store'; // Make sure to import the correct RootState type
 import Loader from './Loader';
-import { DownloadModal } from './modals';
+import { DownloadModal, ProgressModal } from './modals';
 import { checkNovel, deleteNovel, createNovel } from '../services/novel';
-import { toggleDownloadModal } from '../redux/modal/modalSlice';
+import { toggleModal } from '../redux/modal/modalSlice';
 
 const Novel = () => {
   const { novelData, isLoading, hasError, error } = useSelector(
     (state: RootState) => state.novel,
   );
-  const { downloadModal } = useSelector((state: RootState) => state.modal);
+  const { downloadModal, progressModal } = useSelector(
+    (state: RootState) => state.modal,
+  );
   const dispatch = useDispatch();
 
   const [isNovelInLibrary, setIsNovelInLibrary] = useState(false);
@@ -63,6 +65,7 @@ const Novel = () => {
   return (
     <div className="my-10 text-white">
       {downloadModal && <DownloadModal />}
+      {progressModal && <ProgressModal />}
 
       <div className="my-2 flex wrap gap-8">
         <div className="w-[300px] h-[300px]">
@@ -128,7 +131,7 @@ const Novel = () => {
               className="bg-blue-500 w-[110px] hover:bg-blue-700 text-white text-center font-bold py-2 px-4 rounded"
               onClick={() => {
                 dispatch(
-                  toggleDownloadModal({
+                  toggleModal({
                     type: 'download',
                     downloadModal: true,
                   }),
