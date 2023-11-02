@@ -25,10 +25,8 @@ const updateProgress = async (
 };
 
 const getProgress = async () => {
-  console.log('getProgress');
   const response = await fetch('http://localhost:8888/api/novel/progress');
   const data = await response.json();
-  console.log(data);
   return data;
 };
 
