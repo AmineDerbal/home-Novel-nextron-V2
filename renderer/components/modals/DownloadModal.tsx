@@ -86,6 +86,7 @@ const DownloadModal = () => {
                 currentChapter: 0,
                 progress: 0,
               });
+              dispatch(toggleModal({ type: 'download', downloadModal: false }));
               dispatch(
                 toggleModal({
                   type: 'progress',
