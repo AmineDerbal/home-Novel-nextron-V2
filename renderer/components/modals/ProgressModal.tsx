@@ -1,5 +1,6 @@
 import { useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
+import ProgressBar from '@ramonak/react-progress-bar';
 import { getProgress } from '../../services/novel';
 import { toggleModal } from '../../redux/modal/modalSlice';
 
@@ -49,9 +50,13 @@ const ProgressModal = () => {
       }}
     >
       <div className="bg-white mx-auto px-4 py-10 w-3/5 text-black">
-        <p>Novel name: {isNovelName}</p> <p>Progress: {isProgress}%</p>
+        <p>Novel name: {isNovelName}</p>
         <p>Current chapter: {isCurrentChapter}</p>{' '}
         <p>Total chapters: {isNumberOfChapters}</p>
+        <ProgressBar
+          completed={isProgress}
+          maxCompleted={100}
+        />
       </div>
     </div>
   );
