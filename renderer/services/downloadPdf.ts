@@ -77,14 +77,20 @@ const generateNovelInfos = async (
 };
 
 const pipePdf = async (doc: PDFDocument, serieName: string) => {
-  const path = (await getDefaultDownloadPath()).defaultDownloadPath;
-  doc.pipe(
-    fs.createWriteStream(
-      `${path}/${serieName.replace(/[^a-zA-Z0-9 ]/g, '')}.pdf`,
-    ),
-  );
-  doc.font('Times-Bold').fontSize(35).text(serieName, { align: 'center' });
-  doc.moveDown();
+  try {
+    const path = (await getDefaultDownloadPath()).defaultDownloadPath;
+    doc.pipe(
+      fs.createWriteStream(
+        `${path}/${serieName.replace(/[^a-zA-Z0-9 ]/g, '')}.pdf`,
+      ),
+    );
+    doc.font('Times-Bold').fontSize(35).text(serieName, { align: 'center' });
+    doc.moveDown();
+    return { success: true };
+  } catch (error) {
+    console.log(error);
+    return { success: false, error };
+  }
 };
 
 const fetchImage = async (src: string) => {
@@ -99,14 +105,19 @@ const generateSerieImage = async (
   serieImageSrc: string,
   imageWidth: number,
 ) => {
-  const image = await fetchImage(serieImageSrc);
-
-  doc
-    .image(image, doc.page.width / 2 - imageWidth / 2, doc.y, {
-      width: imageWidth,
-    })
-    .stroke();
-  movePdfDocDown(doc, 0.5);
+  try {
+    const image = await fetchImage(serieImageSrc);
+    doc
+      .image(image, doc.page.width / 2 - imageWidth / 2, doc.y, {
+        width: imageWidth,
+      })
+      .stroke();
+    movePdfDocDown(doc, 0.5);
+    return { success: true };
+  } catch (error) {
+    console.log(error);
+    return { success: false, error };
+  }
 };
 
 const createPdf = () => {
