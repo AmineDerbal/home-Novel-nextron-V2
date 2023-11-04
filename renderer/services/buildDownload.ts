@@ -18,6 +18,13 @@ type Novel = {
   chapters: Array<{ title: string; link: string; updateDate: string }>;
 };
 
+const returnErrorExecution = (error: string) => {
+  return {
+    success: false,
+    error,
+  };
+};
+
 const buildDownload = async (novel: Novel) => {
   try {
     const browser = await openBrowser();
@@ -37,8 +44,18 @@ const buildDownload = async (novel: Novel) => {
     } = novel;
 
     let doc = createPdf();
-    await pipePdf(doc, serieName);
-    await generateSerieImage(doc, serieImageSrc, 200);
+    const pipePdfResponse = await pipePdf(doc, serieName);
+    if (!pipePdfResponse.success) {
+      return returnErrorExecution(pipePdfResponse.error);
+    }
+    const generateSerieImageResponse = await generateSerieImage(
+      doc,
+      serieImageSrc,
+      200,
+    );
+    if (!generateSerieImageResponse.success) {
+      return returnErrorExecution(generateSerieImageResponse.error);
+    }
     await generateNovelInfos(
       doc,
       authorName,
@@ -57,7 +74,7 @@ const buildDownload = async (novel: Novel) => {
 
     return { success: true };
   } catch (error) {
-    return { success: false, error };
+    return returnErrorExecution(error);
   }
 };
 
