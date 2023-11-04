@@ -1,4 +1,6 @@
 import { openBrowser } from './executePuppeteer';
+import { Browser } from 'puppeteer';
+import PDFDocument from 'pdfkit';
 import {
   createPdf,
   pipePdf,
@@ -25,28 +27,33 @@ const returnErrorExecution = (error: string) => {
   };
 };
 
-const buildDownload = async (novel: Novel) => {
-  try {
-    const browser = await openBrowser();
-    if (!browser) {
-      console.log('Unable to open browser');
-      return { success: false, error: 'Unable to open browser' };
-    }
-    const {
-      serieName,
-      serieLink,
-      serieImageSrc,
-      authorName,
-      authorLink,
-      lastUpdate,
-      synopsis,
-      chapters,
-    } = novel;
+const stopExecution = (browser: Browser, doc: PDFDocument, error: string) => {
+  doc.end();
+  browser.close();
+  return returnErrorExecution(error);
+};
 
-    let doc = createPdf();
+const buildDownload = async (novel: Novel) => {
+  const browser = await openBrowser();
+  if (!browser) {
+    console.log('Unable to open browser');
+    return { success: false, error: 'Unable to open browser' };
+  }
+  let doc = createPdf();
+  const {
+    serieName,
+    serieLink,
+    serieImageSrc,
+    authorName,
+    authorLink,
+    lastUpdate,
+    synopsis,
+    chapters,
+  } = novel;
+  try {
     const pipePdfResponse = await pipePdf(doc, serieName);
     if (!pipePdfResponse.success) {
-      return returnErrorExecution(pipePdfResponse.error);
+      return stopExecution(browser, doc, pipePdfResponse.error);
     }
     const generateSerieImageResponse = await generateSerieImage(
       doc,
@@ -54,9 +61,9 @@ const buildDownload = async (novel: Novel) => {
       200,
     );
     if (!generateSerieImageResponse.success) {
-      return returnErrorExecution(generateSerieImageResponse.error);
+      return stopExecution(browser, doc, generateSerieImageResponse.error);
     }
-    await generateNovelInfos(
+    const generateNovelInfosResponse = await generateNovelInfos(
       doc,
       authorName,
       serieLink,
@@ -65,15 +72,24 @@ const buildDownload = async (novel: Novel) => {
       chapters.length,
       synopsis,
     );
-    await generateNovelChapters(doc, browser, chapters.reverse(), {
-      serieName,
-      numberOfChapters: chapters.length,
-    });
+    if (!generateNovelInfosResponse.success) {
+      return stopExecution(browser, doc, generateNovelInfosResponse.error);
+    }
+    const generateNovelChaptersResponse = await generateNovelChapters(
+      doc,
+      browser,
+      chapters.reverse(),
+      {
+        serieName,
+        numberOfChapters: chapters.length,
+      },
+    );
     doc.end();
     browser.close();
 
     return { success: true };
   } catch (error) {
+    doc;
     return returnErrorExecution(error);
   }
 };
