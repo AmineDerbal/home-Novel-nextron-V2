@@ -64,16 +64,27 @@ const generateNovelInfos = async (
   chaptersNumber: number,
   synopsis: string,
 ) => {
-  addHyperLinkToPdf(doc, 'Author : ', authorLink, authorName, 16, 'blue');
-  movePdfDocDown(doc, 0.5);
-  addTextToPdf(doc, 'Serie Link : ', serieLink, 16, 'blue');
-  movePdfDocDown(doc, 0.5);
-  addTextToPdf(doc, 'Last Update : ', lastUpdate);
-  movePdfDocDown(doc, 0.5);
-  addTextToPdf(doc, 'number of chapters : ', chaptersNumber.toString());
-  movePdfDocDown(doc, 0.5);
-  doc.addPage();
-  addTextToPdf(doc, 'Synopsis : ', synopsis);
+  try {
+    addHyperLinkToPdf(doc, 'Author : ', authorLink, authorName, 16, 'blue');
+    movePdfDocDown(doc, 0.5);
+    addTextToPdf(doc, 'Serie Link : ', serieLink, 16, 'blue');
+    movePdfDocDown(doc, 0.5);
+    addTextToPdf(doc, 'Last Update : ', lastUpdate);
+    movePdfDocDown(doc, 0.5);
+    addTextToPdf(doc, 'number of chapters : ', chaptersNumber.toString());
+    movePdfDocDown(doc, 0.5);
+    doc.addPage();
+    addTextToPdf(doc, 'Synopsis : ', synopsis);
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      error,
+    };
+  }
 };
 
 const pipePdf = async (doc: PDFDocument, serieName: string) => {
@@ -211,17 +222,27 @@ const generateNovelChapters = async (
     numberOfChapters: number;
   },
 ) => {
-  let currentChapter = 0;
-  await updateProgress(novel.serieName, currentChapter, novel.numberOfChapters);
-  for (const chapter of chapters) {
-    const { title, link } = chapter;
-    await addChapterToPdf(doc, browser, title, link);
-    currentChapter += 1;
+  try {
+    let currentChapter = 0;
     await updateProgress(
       novel.serieName,
       currentChapter,
       novel.numberOfChapters,
     );
+    for (const chapter of chapters) {
+      const { title, link } = chapter;
+      await addChapterToPdf(doc, browser, title, link);
+      currentChapter += 1;
+      await updateProgress(
+        novel.serieName,
+        currentChapter,
+        novel.numberOfChapters,
+      );
+    }
+    return { success: true };
+  } catch (error) {
+    console.log(error);
+    return { success: false, error };
   }
 };
 
