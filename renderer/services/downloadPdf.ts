@@ -231,7 +231,7 @@ const generateNovelChapters = async (
     );
     for (const chapter of chapters) {
       const { title, link } = chapter;
-      await addChapterToPdf(doc, browser, title, link);
+      const response = await addChapterToPdf(doc, browser, title, link);
       currentChapter += 1;
       await updateProgress(
         novel.serieName,
