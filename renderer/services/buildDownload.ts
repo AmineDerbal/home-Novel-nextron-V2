@@ -84,13 +84,15 @@ const buildDownload = async (novel: Novel) => {
         numberOfChapters: chapters.length,
       },
     );
+    if (!generateNovelChaptersResponse.success) {
+      return stopExecution(browser, doc, generateNovelChaptersResponse.error);
+    }
     doc.end();
     browser.close();
 
     return { success: true };
   } catch (error) {
-    doc;
-    return returnErrorExecution(error);
+    return stopExecution(browser, doc, error);
   }
 };
 
