@@ -203,15 +203,20 @@ const addChapterToPdf = async (
     waitUntil: 'domcontentloaded',
     timeout: 0,
   });
+  if (response.status() !== 200) {
+    browser.close();
+    return { success: false, error: 'an error has occured' };
+  }
   doc.addPage();
   doc.font('Times-Bold').fontSize(25).text(title, { align: 'center' });
   movePdfDocDown(doc, 0.5);
   const chapterContent = await page.$$('#chp_raw > *');
-  console.log(title);
+
   for (const element of chapterContent) {
     await parseElementText(page, doc, element);
   }
   page.close();
+  return { success: true };
 };
 const generateNovelChapters = async (
   doc: PDFDocument,
