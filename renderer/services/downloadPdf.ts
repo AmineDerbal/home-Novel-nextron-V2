@@ -207,16 +207,20 @@ const addChapterToPdf = async (
     browser.close();
     return { success: false, error: 'an error has occured' };
   }
-  doc.addPage();
-  doc.font('Times-Bold').fontSize(25).text(title, { align: 'center' });
-  movePdfDocDown(doc, 0.5);
-  const chapterContent = await page.$$('#chp_raw > *');
+  try {
+    doc.addPage();
+    doc.font('Times-Bold').fontSize(25).text(title, { align: 'center' });
+    movePdfDocDown(doc, 0.5);
+    const chapterContent = await page.$$('#chp_raw > *');
 
-  for (const element of chapterContent) {
-    await parseElementText(page, doc, element);
+    for (const element of chapterContent) {
+      await parseElementText(page, doc, element);
+    }
+    page.close();
+    return { success: true };
+  } catch (error) {
+    return { success: false, error };
   }
-  page.close();
-  return { success: true };
 };
 const generateNovelChapters = async (
   doc: PDFDocument,
@@ -237,6 +241,9 @@ const generateNovelChapters = async (
     for (const chapter of chapters) {
       const { title, link } = chapter;
       const response = await addChapterToPdf(doc, browser, title, link);
+      if (!response.success) {
+        return { success: false, error: response.error };
+      }
       currentChapter += 1;
       await updateProgress(
         novel.serieName,
