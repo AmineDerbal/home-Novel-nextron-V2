@@ -79,7 +79,6 @@ const generateNovelInfos = async (
       success: true,
     };
   } catch (error) {
-    console.log(error);
     return {
       success: false,
       error,
@@ -99,7 +98,6 @@ const pipePdf = async (doc: PDFDocument, serieName: string) => {
     doc.moveDown();
     return { success: true };
   } catch (error) {
-    console.log(error);
     return { success: false, error };
   }
 };
@@ -126,7 +124,6 @@ const generateSerieImage = async (
     movePdfDocDown(doc, 0.5);
     return { success: true };
   } catch (error) {
-    console.log(error);
     return { success: false, error };
   }
 };
@@ -253,7 +250,6 @@ const generateNovelChapters = async (
     }
     return { success: true };
   } catch (error) {
-    console.log(error);
     return { success: false, error };
   }
 };
