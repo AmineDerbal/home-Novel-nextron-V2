@@ -5,6 +5,11 @@ const handler = async (req: any, res: any) => {
     const { novel } = req.body;
     try {
       const response = await buildDownload(novel);
+      if (!response.success) {
+        return res
+          .status(500)
+          .json({ error: 'An error occurred while fetching the data' });
+      }
       return res.json({ success: 'success' });
     } catch (error) {
       return res
