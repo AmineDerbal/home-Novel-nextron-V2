@@ -1,9 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-type BooleanOrNull = boolean | null;
+interface DownloadState {
+  downloadSuccess: boolean | null;
+}
 
-const initialState = {
-  downloadSuccess: null as BooleanOrNull,
+const initialState: DownloadState = {
+  downloadSuccess: null,
 };
 
 const downloadSlice = createSlice({
@@ -11,11 +13,14 @@ const downloadSlice = createSlice({
   initialState,
   reducers: {
     setDownloadSuccess: (state, action) => {
-      const downloadSuccess = action.payload;
-      return {
-        ...state,
-        downloadSuccess,
-      };
+      const { type } = action.payload;
+      if (type === 'success') {
+        const { downloadSuccess } = action.payload;
+        return {
+          ...state,
+          downloadSuccess,
+        };
+      }
     },
   },
 });
