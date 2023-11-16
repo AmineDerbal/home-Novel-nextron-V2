@@ -1,10 +1,12 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
+import { RootState } from '../../redux/store';
 import ProgressBar from '@ramonak/react-progress-bar';
 import { getProgress } from '../../services/novel';
 import { toggleModal } from '../../redux/modal/modalSlice';
 
 const ProgressModal = () => {
+  const { downloadSuccess } = useSelector((state: RootState) => state.download);
   const dispatch = useDispatch();
   const [isProgress, setIsProgress] = useState(0);
   const [isNovelName, setIsNovelName] = useState('');
@@ -57,6 +59,13 @@ const ProgressModal = () => {
           completed={isProgress}
           maxCompleted={100}
         />
+        {downloadSuccess === null ? (
+          <></>
+        ) : downloadSuccess ? (
+          <p>Download success</p>
+        ) : (
+          <p>Download failed</p>
+        )}
       </div>
     </div>
   );
