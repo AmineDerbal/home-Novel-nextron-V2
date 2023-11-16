@@ -8,6 +8,7 @@ import {
   updateDefaultDownloadPath,
   updateDownloadProgress,
 } from '../../utils/config';
+import { setDownloadSuccess } from '../../redux/download/downloadSlice';
 import downlodaNovel from '../../services/downloadNovel';
 import folderIcon from '../../assets';
 
@@ -16,7 +17,12 @@ const DownloadModal = () => {
   const dispatch = useDispatch();
   const [downloadPath, setDownloadPath] = useState('');
   const startDownload = async () => {
-    await downlodaNovel(novelData);
+    const success = await downlodaNovel(novelData);
+    success
+      ? dispatch(setDownloadSuccess({ type: 'success', downloadSuccess: true }))
+      : dispatch(
+          setDownloadSuccess({ type: 'success', downloadSuccess: false }),
+        );
   };
 
   const getDir = async () => {
