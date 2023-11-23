@@ -57,6 +57,7 @@ const ProgressModal = () => {
         <ProgressBar
           completed={isProgress}
           maxCompleted={100}
+          labelAlignment="center"
         />
         {downloadSuccess === null ? (
           <></>
