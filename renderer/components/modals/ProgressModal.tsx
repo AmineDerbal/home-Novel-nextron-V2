@@ -17,7 +17,6 @@ const ProgressModal = () => {
     const fetchData = async () => {
       const data = await getProgress();
       if (data.success) {
-        console.log('data progress', data.progress);
         const { novelName, numberOfChapters, currentChapter, progress } =
           data.progress;
         if (isNovelName !== novelName) {
