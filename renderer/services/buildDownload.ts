@@ -36,7 +36,6 @@ const stopExecution = (browser: Browser, doc: PDFDocument, error: string) => {
 const buildDownload = async (novel: Novel) => {
   const browser = await openBrowser();
   if (!browser) {
-    console.log('Unable to open browser');
     return { success: false, error: 'Unable to open browser' };
   }
   let doc = createPdf();
