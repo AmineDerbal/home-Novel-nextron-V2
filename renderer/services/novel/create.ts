@@ -9,7 +9,6 @@ type Novel = {
 };
 
 const createNovel = async (novel: Novel) => {
-  console.log('start saving');
   const options = {
     method: 'POST',
     headers: {
@@ -23,7 +22,6 @@ const createNovel = async (novel: Novel) => {
   try {
     const response = await fetch('api/novel/create', options);
     const data = await response.json();
-    console.log(await data);
     return data;
   } catch (error) {
     return false;
