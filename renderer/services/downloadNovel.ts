@@ -20,7 +20,6 @@ const downlodaNovel = async (novel: Novel) => {
     }),
   };
   try {
-    console.log('hello');
     const response = await fetch('api/novel/download', options);
     const data = await response.json();
     if (!data.success) return false;
