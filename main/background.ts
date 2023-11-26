@@ -28,7 +28,6 @@ if (isProd) {
     const port = process.argv[2];
     await mainWindow.loadURL(`http://localhost:${port}/home`);
     console.log(`Listening on http://localhost:${port}`);
-    console.log(configPath);
     await CreateConfigJson(configPath, defaultDownloadPath);
 
     // Open the directory dialog and return the selected directory

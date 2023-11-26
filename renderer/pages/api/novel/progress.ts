@@ -23,7 +23,6 @@ const handler = async (req, res) => {
       }
       return res.json({ success: 'success' });
     } catch (error) {
-      console.error('Error handling POST request:', error);
       return res.status(500).json({ success: false, error: 'Server error' });
     }
   } else if (req.method === 'GET') {
