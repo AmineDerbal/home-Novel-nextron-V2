@@ -20,7 +20,6 @@ export const getNovelData = createAsyncThunk(
       if (novelStream.status !== 200) {
         throw new Error(novelData.error);
       }
-      console.log(novelData);
       return await novelData;
     } catch (error) {
       return rejectWithValue(error);
@@ -74,7 +73,6 @@ const novelSlice = createSlice({
     });
     builder.addCase(getNovelData.fulfilled, (state, action) => {
       const novelData = action.payload;
-      console.log('payLoad', novelData);
       const isLoading = false;
       const error = null;
       return {
@@ -88,7 +86,6 @@ const novelSlice = createSlice({
       const hasError = true;
       const isLoading = false;
       const error = payload.toString();
-      console.log('error', error);
       return {
         ...state,
         error,
