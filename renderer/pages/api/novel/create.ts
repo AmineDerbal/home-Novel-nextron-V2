@@ -26,7 +26,7 @@ const handler = async (req: any, res: any) => {
       synopsis,
     ];
     try {
-      const insertResult = await db.run(insertQuery, values);
+      await db.run(insertQuery, values);
       res.status(201).json({ message: 'Novel created successfully' });
     } catch (error) {
       res
