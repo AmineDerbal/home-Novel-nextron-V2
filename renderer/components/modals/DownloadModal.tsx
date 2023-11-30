@@ -26,7 +26,7 @@ const DownloadModal = () => {
         );
   };
 
-  const getDir = async () => {
+  const setNewDownloadPath = async () => {
     const defaultDownloadPath = await getDefaultDownloadPath();
     if (defaultDownloadPath.success) {
       const defaultPath = defaultDownloadPath.defaultDownloadPath;
@@ -80,7 +80,7 @@ const DownloadModal = () => {
             className="cursor-pointer"
             src={folderIcon.src}
             alt="Choose Folder"
-            onClick={getDir}
+            onClick={setNewDownloadPath}
           />
         </div>
         <div className=" mt-4 px-2 flex justify-end gap-2">
