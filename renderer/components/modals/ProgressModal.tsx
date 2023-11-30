@@ -60,7 +60,11 @@ const ProgressModal = () => {
           labelAlignment="center"
         />
         {downloadSuccess === null ? (
-          <></>
+          <div className="flex justify-end py-4">
+            <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+              Stop download
+            </button>
+          </div>
         ) : downloadSuccess ? (
           <p>Download success</p>
         ) : (
