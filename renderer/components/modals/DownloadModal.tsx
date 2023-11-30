@@ -17,6 +17,7 @@ const DownloadModal = () => {
   const dispatch = useDispatch();
   const [downloadPath, setDownloadPath] = useState('');
   const startDownload = async () => {
+    dispatch(setDownloadSuccess({ type: 'success', downloadSuccess: null }));
     const success = await downlodaNovel(novelData);
     success
       ? dispatch(setDownloadSuccess({ type: 'success', downloadSuccess: true }))
@@ -99,6 +100,7 @@ const DownloadModal = () => {
                   progressModal: true,
                 }),
               );
+
               startDownload();
             }}
           >
