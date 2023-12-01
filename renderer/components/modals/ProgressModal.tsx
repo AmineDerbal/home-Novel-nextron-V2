@@ -4,14 +4,28 @@ import { RootState } from '../../redux/store';
 import ProgressBar from '@ramonak/react-progress-bar';
 import { getProgress } from '../../services/novel';
 import { toggleModal } from '../../redux/modal/modalSlice';
+import { setDownloadSuccess } from '../../redux/download/downloadSlice';
+import downlodaNovel from '../../services/downloadNovel';
 
 const ProgressModal = () => {
   const { downloadSuccess } = useSelector((state: RootState) => state.download);
+  const { novelData } = useSelector((state: RootState) => state.novel);
+  const { progressModal } = useSelector((state: RootState) => state.modal);
   const dispatch = useDispatch();
   const [isProgress, setIsProgress] = useState(0);
   const [isNovelName, setIsNovelName] = useState('');
   const [isNumberOfChapters, setIsNumberOfChapters] = useState(0);
   const [isCurrentChapter, setIsCurrentChapter] = useState(0);
+
+  const startDownload = async () => {
+    dispatch(setDownloadSuccess({ type: 'success', downloadSuccess: null }));
+    const success = await downlodaNovel(novelData);
+    success
+      ? dispatch(setDownloadSuccess({ type: 'success', downloadSuccess: true }))
+      : dispatch(
+          setDownloadSuccess({ type: 'success', downloadSuccess: false }),
+        );
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,17 +46,20 @@ const ProgressModal = () => {
       }
     };
 
-    fetchData();
-    const interval = setInterval(async () => {
-      if (isProgress === 100) {
-        clearInterval(interval);
-      }
+    if (progressModal) {
+      startDownload();
       fetchData();
-    }, 500);
-    return () => {
-      clearInterval(interval);
-    };
-  });
+      const interval = setInterval(async () => {
+        if (isProgress === 100) {
+          clearInterval(interval);
+        }
+        fetchData();
+      }, 500);
+      return () => {
+        clearInterval(interval);
+      };
+    }
+  }, [progressModal]);
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 overflow-y-auto"
