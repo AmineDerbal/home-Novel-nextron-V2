@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../redux/store'; // Make sure to import the correct RootState type
+import { useDispatch } from 'react-redux';
 import { ipcRenderer } from 'electron';
 import { toggleModal } from '../../redux/modal/modalSlice';
 import {
@@ -8,23 +7,11 @@ import {
   updateDefaultDownloadPath,
   updateDownloadProgress,
 } from '../../utils/config';
-import { setDownloadSuccess } from '../../redux/download/downloadSlice';
-import downlodaNovel from '../../services/downloadNovel';
 import folderIcon from '../../assets';
 
 const DownloadModal = () => {
-  const { novelData } = useSelector((state: RootState) => state.novel);
   const dispatch = useDispatch();
   const [downloadPath, setDownloadPath] = useState('');
-  const startDownload = async () => {
-    dispatch(setDownloadSuccess({ type: 'success', downloadSuccess: null }));
-    const success = await downlodaNovel(novelData);
-    success
-      ? dispatch(setDownloadSuccess({ type: 'success', downloadSuccess: true }))
-      : dispatch(
-          setDownloadSuccess({ type: 'success', downloadSuccess: false }),
-        );
-  };
 
   const setNewDownloadPath = async () => {
     const defaultDownloadPath = await getDefaultDownloadPath();
@@ -100,8 +87,6 @@ const DownloadModal = () => {
                   progressModal: true,
                 }),
               );
-
-              startDownload();
             }}
           >
             Download
