@@ -5,7 +5,6 @@ import ProgressBar from '@ramonak/react-progress-bar';
 import { getProgress } from '../../services/novel';
 import { toggleModal } from '../../redux/modal/modalSlice';
 import { setDownloadSuccess } from '../../redux/download/downloadSlice';
-import downlodaNovel from '../../services/downloadNovel';
 
 const ProgressModal = () => {
   const { downloadSuccess } = useSelector((state: RootState) => state.download);
@@ -16,11 +15,13 @@ const ProgressModal = () => {
   const [isNovelName, setIsNovelName] = useState('');
   const [isNumberOfChapters, setIsNumberOfChapters] = useState(0);
   const [isCurrentChapter, setIsCurrentChapter] = useState(0);
-  const worker = new Worker('DownloadWorker.js');
+  const worker = new Worker(
+    new URL('../../workers/DownloadWorker.ts', import.meta.url),
+  );
 
   const startDownload = async () => {
     dispatch(setDownloadSuccess({ type: 'success', downloadSuccess: null }));
-    //const success = await downlodaNovel(novelData);
+
     worker.postMessage(novelData);
     worker.onmessage = (event) => {
       const success = event.data;
@@ -87,7 +88,10 @@ const ProgressModal = () => {
         />
         {downloadSuccess === null ? (
           <div className="flex justify-end py-4">
-            <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+            <button
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+              onClick={() => worker.postMessage('terminate')}
+            >
               Stop download
             </button>
           </div>
