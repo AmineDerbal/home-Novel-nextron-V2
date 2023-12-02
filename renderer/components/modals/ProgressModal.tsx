@@ -16,15 +16,24 @@ const ProgressModal = () => {
   const [isNovelName, setIsNovelName] = useState('');
   const [isNumberOfChapters, setIsNumberOfChapters] = useState(0);
   const [isCurrentChapter, setIsCurrentChapter] = useState(0);
+  const worker = new Worker('DownloadWorker.js');
 
   const startDownload = async () => {
     dispatch(setDownloadSuccess({ type: 'success', downloadSuccess: null }));
-    const success = await downlodaNovel(novelData);
-    success
-      ? dispatch(setDownloadSuccess({ type: 'success', downloadSuccess: true }))
-      : dispatch(
-          setDownloadSuccess({ type: 'success', downloadSuccess: false }),
-        );
+    //const success = await downlodaNovel(novelData);
+    worker.postMessage(novelData);
+    worker.onmessage = (event) => {
+      const success = event.data;
+
+      // Dispatch the result to set download success or failure
+      success
+        ? dispatch(
+            setDownloadSuccess({ type: 'success', downloadSuccess: true }),
+          )
+        : dispatch(
+            setDownloadSuccess({ type: 'success', downloadSuccess: false }),
+          );
+    };
   };
 
   useEffect(() => {
