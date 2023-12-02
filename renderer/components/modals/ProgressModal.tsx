@@ -83,9 +83,33 @@ const ProgressModal = () => {
             </button>
           </div>
         ) : downloadSuccess ? (
-          <p>Download success</p>
+          <>
+            <p>Download success</p>
+            <button
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+              onClick={() =>
+                dispatch(
+                  toggleModal({ type: 'progress', progressModal: false }),
+                )
+              }
+            >
+              Exit
+            </button>
+          </>
         ) : (
-          <p>Download failed</p>
+          <>
+            <p>Download failed</p>
+            <button
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+              onClick={() =>
+                dispatch(
+                  toggleModal({ type: 'progress', progressModal: false }),
+                )
+              }
+            >
+              Exit
+            </button>
+          </>
         )}
       </div>
     </div>
