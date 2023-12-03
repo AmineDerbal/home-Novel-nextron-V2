@@ -5,6 +5,8 @@ import ProgressBar from '@ramonak/react-progress-bar';
 import { getProgress } from '../../services/novel';
 import { toggleModal } from '../../redux/modal/modalSlice';
 import { setDownloadSuccess } from '../../redux/download/downloadSlice';
+import downlodaNovel from '../../services/downloadNovel';
+import { getBrowserPid, setBrowserPid } from '../../utils/config';
 
 const ProgressModal = () => {
   const { downloadSuccess } = useSelector((state: RootState) => state.download);
@@ -15,26 +17,32 @@ const ProgressModal = () => {
   const [isNovelName, setIsNovelName] = useState('');
   const [isNumberOfChapters, setIsNumberOfChapters] = useState(0);
   const [isCurrentChapter, setIsCurrentChapter] = useState(0);
-  const worker = new Worker(
-    new URL('../../workers/DownloadWorker.ts', import.meta.url),
-  );
 
+  const exitWindow = () => {
+    dispatch(toggleModal({ type: 'progress', progressModal: false }));
+  };
+  const stopDownload = async () => {
+    const browserPidRequest: { success: boolean; browserPid?: number } =
+      await getBrowserPid();
+    if (!browserPidRequest.success) {
+      return;
+    }
+    const browserPid = browserPidRequest.browserPid;
+    if (browserPid) {
+      process.kill(browserPid);
+      await setBrowserPid(null);
+      exitWindow();
+    }
+    return;
+  };
   const startDownload = async () => {
     dispatch(setDownloadSuccess({ type: 'success', downloadSuccess: null }));
-
-    worker.postMessage(novelData);
-    worker.onmessage = (event) => {
-      const success = event.data;
-
-      // Dispatch the result to set download success or failure
-      success
-        ? dispatch(
-            setDownloadSuccess({ type: 'success', downloadSuccess: true }),
-          )
-        : dispatch(
-            setDownloadSuccess({ type: 'success', downloadSuccess: false }),
-          );
-    };
+    const success = await downlodaNovel(novelData);
+    success
+      ? dispatch(setDownloadSuccess({ type: 'success', downloadSuccess: true }))
+      : dispatch(
+          setDownloadSuccess({ type: 'success', downloadSuccess: false }),
+        );
   };
 
   useEffect(() => {
@@ -71,13 +79,11 @@ const ProgressModal = () => {
     }
   }, [progressModal]);
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 overflow-y-auto"
-      onClick={() => {
-        dispatch(toggleModal({ type: 'progress', progressModal: false }));
-      }}
-    >
-      <div className="bg-white mx-auto px-4 py-10 w-3/5 text-black">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 overflow-y-auto">
+      <div
+        className="bg-white mx-auto px-4 py-10 w-3/5 text-black"
+        onClick={(event) => event.stopPropagation()}
+      >
         <p>Novel name: {isNovelName}</p>
         <p>Current chapter: {isCurrentChapter}</p>{' '}
         <p>Total chapters: {isNumberOfChapters}</p>
@@ -90,7 +96,7 @@ const ProgressModal = () => {
           <div className="flex justify-end py-4">
             <button
               className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-              onClick={() => worker.postMessage('terminate')}
+              onClick={stopDownload}
             >
               Stop download
             </button>
@@ -100,11 +106,7 @@ const ProgressModal = () => {
             <p>Download success</p>
             <button
               className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-              onClick={() =>
-                dispatch(
-                  toggleModal({ type: 'progress', progressModal: false }),
-                )
-              }
+              onClick={stopDownload}
             >
               Exit
             </button>
@@ -114,11 +116,7 @@ const ProgressModal = () => {
             <p>Download failed</p>
             <button
               className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-              onClick={() =>
-                dispatch(
-                  toggleModal({ type: 'progress', progressModal: false }),
-                )
-              }
+              onClick={stopDownload}
             >
               Exit
             </button>
