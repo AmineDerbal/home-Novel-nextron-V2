@@ -8,6 +8,7 @@ import {
   generateNovelInfos,
   generateNovelChapters,
 } from './downloadPdf';
+import { setBrowserPid } from '../utils/config';
 
 type Novel = {
   serieName: string;
@@ -34,10 +35,14 @@ const stopExecution = (browser: Browser, doc: PDFDocument, error: string) => {
 };
 
 const buildDownload = async (novel: Novel) => {
-  const browser = await openBrowser();
+  const browser: Browser | any = await openBrowser();
   if (!browser) {
     return { success: false, error: 'Unable to open browser' };
   }
+
+  const pid = browser.process().pid;
+  await setBrowserPid(pid);
+
   let doc = createPdf();
   const {
     serieName,
