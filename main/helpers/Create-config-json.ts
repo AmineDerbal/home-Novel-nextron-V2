@@ -9,6 +9,7 @@ export default (configPath: string, defaultDownloadPath: string) => {
       currentChapter: 0,
       progress: 0,
     },
+    browserPid: null,
   };
   if (!fs.existsSync(configPath)) {
     fs.writeFileSync(configPath, JSON.stringify(configData));
