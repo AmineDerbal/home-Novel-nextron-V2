@@ -14,6 +14,40 @@ const getDownloadData = async () => {
     return null;
   }
 };
+
+const getBrowserPid = async () => {
+  const configJsonPath = getConfigJsonPath();
+  try {
+    const data = await fs.promises.readFile(configJsonPath);
+    const jsonData = JSON.parse(data.toString());
+    const browserPid = jsonData.browserPid;
+    return {
+      success: true,
+      browserPid,
+    };
+  } catch (err) {
+    console.error('Error getting browser pid:', err);
+    return { success: false };
+  }
+};
+
+const setBrowserPid = async (pid: number) => {
+  const configJsonPath = getConfigJsonPath();
+  try {
+    const jsonData = await getDownloadData();
+    if (!jsonData) {
+      return { success: false };
+    }
+    jsonData.browserPid = pid;
+    await fs.promises.writeFile(configJsonPath, JSON.stringify(jsonData));
+    return {
+      success: true,
+    };
+  } catch (err) {
+    console.error('Error setting browser pid:', err);
+    return { success: false };
+  }
+};
 const getDefaultDownloadPath = async () => {
   try {
     const jsonData = await getDownloadData();
@@ -104,4 +138,6 @@ export {
   updateDefaultDownloadPath,
   getDownloadProgress,
   updateDownloadProgress,
+  getBrowserPid,
+  setBrowserPid,
 };
