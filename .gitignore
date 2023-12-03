@@ -3,5 +3,5 @@ node_modules
 .next
 app
 dist
-renderer/database
+database
 config.json
