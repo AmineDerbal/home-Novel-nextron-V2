@@ -31,7 +31,7 @@ export const serializeDb = () => {
 
 export const connectDb = () => {
   console.log('Connecting to the SQLite database...');
-  const db = new sqlite3.Database('renderer/database/mydb.db', (err) => {
+  const db = new sqlite3.Database('database/mydb.db', (err) => {
     if (err) {
       console.log(err.message);
     } else {
