@@ -1,10 +1,15 @@
-import buildDownload from '../../../services/buildDownload';
+import buildDownload from '../../../../services/buildDownload';
 
 const handler = async (req: any, res: any) => {
   if (req.method === 'POST') {
-    const { novel } = req.body;
+    console.log('req', req.body);
+    const { novel, browser } = req.body;
+    //console.log('browser', browser);
+    const newBrowser = JSON.parse(browser);
+    console.log('newBrowser', newBrowser);
+
     try {
-      const response = await buildDownload(novel);
+      const response = await buildDownload(novel, browser);
       if (!response.success) {
         return res
           .status(500)
