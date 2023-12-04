@@ -1,7 +1,28 @@
 import path from 'path';
 import fs from 'fs';
+import { ipcRenderer } from 'electron';
 
 const getConfigJsonPath = () => path.join(process.cwd(), 'config.json');
+
+const getPortfromMain = async () => {
+  try {
+    const port = await ipcRenderer.invoke('get-port');
+    if (port) {
+      return port;
+    }
+    return false;
+  } catch (error) {
+    return false;
+  }
+};
+
+const getHomeUrl = async () => {
+  let port: string | boolean = false;
+  while (!port) {
+    port = await getPortfromMain();
+  }
+  return `http://localhost:${port}/`;
+};
 
 const getDownloadData = async () => {
   const configJsonPath = getConfigJsonPath();
@@ -140,4 +161,5 @@ export {
   updateDownloadProgress,
   getBrowserPid,
   setBrowserPid,
+  getHomeUrl,
 };
