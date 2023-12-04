@@ -227,6 +227,7 @@ const generateNovelChapters = async (
     serieName: string;
     numberOfChapters: number;
   },
+  homeUrl: string,
 ) => {
   try {
     let currentChapter = 0;
@@ -234,6 +235,7 @@ const generateNovelChapters = async (
       novel.serieName,
       currentChapter,
       novel.numberOfChapters,
+      homeUrl,
     );
     for (const chapter of chapters) {
       const { title, link } = chapter;
@@ -246,6 +248,7 @@ const generateNovelChapters = async (
         novel.serieName,
         currentChapter,
         novel.numberOfChapters,
+        homeUrl,
       );
     }
     return { success: true };

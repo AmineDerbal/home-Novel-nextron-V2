@@ -2,9 +2,9 @@ import buildDownload from '../../../../services/buildDownload';
 
 const handler = async (req: any, res: any) => {
   if (req.method === 'POST') {
-    const { novel } = req.body;
+    const { novel, homeUrl } = req.body;
     try {
-      const response = await buildDownload(novel);
+      const response = await buildDownload(novel, homeUrl);
       if (!response.success) {
         return res
           .status(500)

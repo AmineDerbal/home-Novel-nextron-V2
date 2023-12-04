@@ -1,3 +1,5 @@
+import { getHomeUrl } from '../utils/config';
+
 type Novel = {
   serieName: string;
   serieLink: string;
@@ -10,6 +12,7 @@ type Novel = {
 };
 
 const downlodaNovel = async (novel: Novel) => {
+  const homeUrl = await getHomeUrl();
   const options = {
     method: 'POST',
     headers: {
@@ -17,13 +20,11 @@ const downlodaNovel = async (novel: Novel) => {
     },
     body: JSON.stringify({
       novel,
+      homeUrl,
     }),
   };
   try {
-    const response = await fetch(
-      'http://localhost:8888/api/novel/download',
-      options,
-    );
+    const response = await fetch(`${homeUrl}api/novel/download`, options);
     const data = await response.json();
     if (!data.success) return false;
     return true;

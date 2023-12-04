@@ -34,7 +34,7 @@ const stopExecution = (browser: Browser, doc: PDFDocument, error: string) => {
   return returnErrorExecution(error);
 };
 
-const buildDownload = async (novel: Novel) => {
+const buildDownload = async (novel: Novel, homeUrl: string) => {
   const browser: Browser | any = await openBrowser();
   if (!browser) {
     return { success: false, error: 'Unable to open browser' };
@@ -87,6 +87,7 @@ const buildDownload = async (novel: Novel) => {
         serieName,
         numberOfChapters: chapters.length,
       },
+      homeUrl,
     );
     if (!generateNovelChaptersResponse.success) {
       return stopExecution(browser, doc, generateNovelChaptersResponse.error);
