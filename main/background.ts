@@ -30,6 +30,18 @@ if (isProd) {
     console.log(`Listening on http://localhost:${port}`);
     await CreateConfigJson(configPath, defaultDownloadPath);
 
+    // Send the port number to the main window
+    ipcMain.handle('get-port', () => {
+      try {
+        if (port) {
+          return port;
+        }
+        return false;
+      } catch (error) {
+        return false;
+      }
+    });
+
     // Open the directory dialog and return the selected directory
     ipcMain.handle('open-directory-dialog', async (options: any) => {
       try {
