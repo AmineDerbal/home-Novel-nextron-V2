@@ -28,11 +28,11 @@ const ProgressModal = () => {
       return;
     }
     const browserPid = browserPidRequest.browserPid;
-    if (browserPid) {
+    if (browserPid !== null) {
       process.kill(browserPid);
       await setBrowserPid(null);
-      exitWindow();
     }
+    exitWindow();
     return;
   };
   const startDownload = async () => {
@@ -106,7 +106,7 @@ const ProgressModal = () => {
             <p>Download success</p>
             <button
               className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-              onClick={stopDownload}
+              onClick={exitWindow}
             >
               Exit
             </button>
@@ -116,7 +116,7 @@ const ProgressModal = () => {
             <p>Download failed</p>
             <button
               className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-              onClick={stopDownload}
+              onClick={exitWindow}
             >
               Exit
             </button>
