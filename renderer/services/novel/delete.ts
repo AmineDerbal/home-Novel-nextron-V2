@@ -1,3 +1,5 @@
+import { getHomeUrl } from '../../utils/config';
+
 const deleteNovel = async (id: string) => {
   const options = {
     method: 'DELETE',
@@ -9,7 +11,8 @@ const deleteNovel = async (id: string) => {
     }),
   };
   try {
-    const response = await fetch('api/novel', options);
+    const homeUrl = await getHomeUrl();
+    const response = await fetch(`${homeUrl}api/novel/`, options);
     const data = await response.json();
     if (data.message === 'Novel deleted successfully') {
       return true;

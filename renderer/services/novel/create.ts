@@ -1,3 +1,5 @@
+import { getHomeUrl } from '../../utils/config';
+
 type Novel = {
   serieName: string;
   serieLink: string;
@@ -20,7 +22,8 @@ const createNovel = async (novel: Novel) => {
   };
 
   try {
-    const response = await fetch('api/novel/create', options);
+    const homeUrl = await getHomeUrl();
+    const response = await fetch(`${homeUrl}api/novel/create`, options);
     const data = await response.json();
     return data;
   } catch (error) {

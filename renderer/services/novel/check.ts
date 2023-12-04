@@ -1,3 +1,5 @@
+import { getHomeUrl } from '../../utils/config';
+
 const checkNovel = async (novel: {
   serieName: string;
   serieLink: string;
@@ -13,7 +15,8 @@ const checkNovel = async (novel: {
         novel,
       }),
     };
-    const response = await fetch('api/novel/check', options);
+    const homeUrl = await getHomeUrl();
+    const response = await fetch(`${homeUrl}api/novel/check`, options);
     const data = await response.json();
     if (data.message === 'Novel already exists') {
       return {
