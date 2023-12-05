@@ -1,5 +1,6 @@
 import PDFDocument from 'pdfkit';
 import fs from 'fs';
+import path from 'path';
 import axios from 'axios';
 import { getDefaultDownloadPath } from '../utils/config';
 import { Browser, Page } from 'puppeteer';
@@ -83,6 +84,23 @@ const generateNovelInfos = async (
       success: false,
       error,
     };
+  }
+};
+
+const deletePdfFile = async (serieName: string) => {
+  try {
+    const downloadPath = (await getDefaultDownloadPath()).defaultDownloadPath;
+    const filePath = path.join(
+      downloadPath,
+      `${serieName.replace(/[^a-zA-Z0-9 ]/g, '')}.pdf`,
+    );
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+      return { success: true };
+    }
+    return { success: false };
+  } catch (error) {
+    return { success: false };
   }
 };
 
@@ -263,4 +281,5 @@ export {
   generateSerieImage,
   generateNovelInfos,
   generateNovelChapters,
+  deletePdfFile,
 };
