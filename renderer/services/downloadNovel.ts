@@ -33,4 +33,27 @@ const downlodaNovel = async (novel: Novel) => {
   }
 };
 
-export default downlodaNovel;
+const deleteNovel = async (name: string) => {
+  const homeUrl = await getHomeUrl();
+  const options = {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      name,
+    }),
+  };
+  try {
+    const response = await fetch(`${homeUrl}api/novel/download`, options);
+    const data = await response.json();
+    if (data.message === 'Novel deleted successfully') {
+      return true;
+    }
+    return false;
+  } catch (error) {
+    return false;
+  }
+};
+
+export { deleteNovel, downlodaNovel };
