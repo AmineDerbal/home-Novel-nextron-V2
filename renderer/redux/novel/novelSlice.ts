@@ -66,9 +66,11 @@ const novelSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(getNovelData.pending, (state) => {
       const isLoading = true;
+      const hasError = false;
       return {
         ...state,
         isLoading,
+        hasError,
       };
     });
     builder.addCase(getNovelData.fulfilled, (state, action) => {
