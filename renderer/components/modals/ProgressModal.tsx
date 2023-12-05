@@ -5,7 +5,7 @@ import ProgressBar from '@ramonak/react-progress-bar';
 import { getProgress } from '../../services/novel';
 import { toggleModal } from '../../redux/modal/modalSlice';
 import { setDownloadSuccess } from '../../redux/download/downloadSlice';
-import downlodaNovel from '../../services/downloadNovel';
+import { downlodaNovel, deleteNovel } from '../../services/downloadNovel';
 import { getBrowserPid, setBrowserPid } from '../../utils/config';
 
 const ProgressModal = () => {
@@ -25,11 +25,13 @@ const ProgressModal = () => {
     const browserPidRequest: { success: boolean; browserPid?: number } =
       await getBrowserPid();
     if (!browserPidRequest.success) {
+      await deleteNovel(novelData.serieName);
       return;
     }
     const browserPid = browserPidRequest.browserPid;
     if (browserPid !== null) {
       process.kill(browserPid);
+      await deleteNovel(novelData.serieName);
       await setBrowserPid(null);
     }
     exitWindow();
