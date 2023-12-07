@@ -15,7 +15,6 @@ const Url = () => {
       console.log('this is not a scribblehub url');
       return;
     }
-    console.log('url of url page', url);
     await dispatch(getNovelData(url));
   };
   return (
