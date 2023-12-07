@@ -8,7 +8,6 @@ const openBrowser = async () => {
   try {
     const browser = await puppeteer.launch({
       executablePath: executablePath(),
-      headless: false,
     });
     return browser;
   } catch (error) {
