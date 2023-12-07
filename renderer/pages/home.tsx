@@ -21,7 +21,7 @@ const Home = () => {
   return (
     <Provider store={store}>
       <div className="mx-10">
-        <h1 className="text-center mt-5">Welcome</h1>
+        <h1 className="text-center my-5 text-5xl">Home Novel</h1>
         <Url />
         <Novel />
       </div>
