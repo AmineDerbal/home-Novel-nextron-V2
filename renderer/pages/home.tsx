@@ -12,7 +12,7 @@ const Home = () => {
         const database = await fetch('api/database');
         await database.json();
       } catch (error) {
-        console.log(error);
+        return;
       }
     };
     connect();
