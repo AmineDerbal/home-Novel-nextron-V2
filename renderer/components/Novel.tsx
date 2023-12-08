@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store'; // Make sure to import the correct RootState type
 import Loader from './Loader';
+import Error from './Error';
 import { DownloadModal, ProgressModal } from './modals';
 import { checkNovel, deleteNovel, createNovel } from '../services/novel';
 import { toggleModal } from '../redux/modal/modalSlice';
@@ -56,10 +57,10 @@ const Novel = () => {
     return <Loader />;
   }
   if (hasError) {
-    return <div className="text-white">Error... {error}</div>;
+    return <Error />;
   }
   if (!novelData || isNovelEmpty(novelData)) {
-    return <div>Waiting for url...</div>;
+    return <></>;
   }
 
   return (
