@@ -58,8 +58,6 @@ if (isProd) {
         throw error;
       }
     });
-
-    mainWindow.webContents.openDevTools();
   }
 })();
 
