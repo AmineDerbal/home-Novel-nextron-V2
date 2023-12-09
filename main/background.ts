@@ -52,7 +52,6 @@ if (isProd) {
         if (result.canceled) {
           return null;
         }
-        console.log('result', result);
         return result.filePaths[0];
       } catch (error) {
         throw error;
