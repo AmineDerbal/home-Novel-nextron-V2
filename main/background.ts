@@ -1,7 +1,7 @@
 import { app, dialog, ipcMain, Menu } from 'electron';
 import serve from 'electron-serve';
 import path from 'path';
-import { createWindow, CreateConfigJson } from './helpers';
+import { createWindow, CreateConfigJson, popupMenu } from './helpers';
 
 const configPath = path.join(process.cwd(), 'config.json'); // Create the defualt Json config file
 const defaultDownloadPath = path.join(process.env.USERPROFILE, 'downloads'); // The defualt download path
@@ -30,6 +30,9 @@ if (isProd) {
     const port = process.argv[2];
     await mainWindow.loadURL(`http://localhost:${port}/home`);
     await CreateConfigJson(configPath, defaultDownloadPath);
+    mainWindow.webContents.on('context-menu', () => {
+      popupMenu.popup();
+    });
 
     // Send the port number to the main window
     ipcMain.handle('get-port', () => {
