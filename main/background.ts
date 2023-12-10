@@ -1,4 +1,4 @@
-import { app, dialog, ipcMain } from 'electron';
+import { app, dialog, ipcMain, Menu } from 'electron';
 import serve from 'electron-serve';
 import path from 'path';
 import { createWindow, CreateConfigJson } from './helpers';
@@ -22,12 +22,13 @@ if (isProd) {
     height: 600,
   });
 
+  Menu.setApplicationMenu(null);
+
   if (isProd) {
     await mainWindow.loadURL('app://./home.html');
   } else {
     const port = process.argv[2];
     await mainWindow.loadURL(`http://localhost:${port}/home`);
-    console.log(`Listening on http://localhost:${port}`);
     await CreateConfigJson(configPath, defaultDownloadPath);
 
     // Send the port number to the main window
