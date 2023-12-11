@@ -21,7 +21,11 @@
 
 <!-- PROJECT DESCRIPTION -->
 
-# 📖 Home-Nove <a name="about-the-project"></a>
+# 📖 Home-Novel <a name="about-the-project"></a>
+
+<div align="center">
+<img src='./resources/Home-novel.png' alt="Home-Novel" width="500">
+<div>
 
 A desktop App scrapper built with Electron and NextJs, utilizing Puppeteer to
 scrape stories from ScribbleHub website and download it as PDF (still in
