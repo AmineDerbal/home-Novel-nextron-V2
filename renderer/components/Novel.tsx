@@ -153,7 +153,16 @@ const Novel = () => {
               key={`chapter-${chapter.link}`}
             >
               {' '}
-              <a href={chapter.link}>{chapter.title}</a>
+              <a
+                onClick={(event) => {
+                  event.preventDefault();
+                  window.location.href = 'chrome://newtab';
+                  window.open(chapter.link, '_system');
+                }}
+                href={chapter.link}
+              >
+                {chapter.title}
+              </a>
               <p className="text-gray-400 text-center">{chapter.updateDate}</p>
             </div>
           ),
