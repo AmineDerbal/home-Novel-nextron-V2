@@ -25,7 +25,7 @@
 
 <div align="center">
 <img src='./resources/Home-novel.png' alt="Home-Novel" width="500">
-<div>
+</div>
 
 A desktop App scrapper built with Electron and NextJs, utilizing Puppeteer to
 scrape stories from ScribbleHub website and download it as PDF (still in
